@@ -1,0 +1,132 @@
+[
+  {
+    "organization": "Unicode",
+    "title": "Lead Backend Developer",
+    "description": "Returning to unicode, I worked mostly in the backend to automate the adoption process, working with social media sites, mailing systems, manual approvals, and badge processing.",
+    "start": "2024-05-01",
+    "end": "2024-09-01",
+    "type": "employment",
+    "thumbnail": "unicode.png",
+    "timeline-id": 12
+  },
+  {
+    "organization": "Northeastern Electric Racing",
+    "title": "Head of Web Dev",
+    "description": "Over the course of my sophomore year, I was promoted to tech lead and then head of web development, where I oversee tech leads to push out new features on a semesterly basis, such as a part review system where users can mark up pdfs!",
+    "start": "2025-01-01",
+    "end": "2025-06-01",
+    "type": "extracurricular",
+    "thumbnail": "ner.png",
+    "timeline-id": 10
+  },
+  {
+    "organization": "Unicode",
+    "title": "Software Developer Intern",
+    "description": "During my first internship with Unicode, I worked on renewing the adopt a character site with integrations for payment processing as well as external donor databases. <a href=\"https://aac.unicode.org/adopt\">Go Adopt a Character!</a>",
+    "start": "2022-08-01",
+    "end": "2023-09-01",
+    "type": "employment",
+    "thumbnail": "unicode.png",
+    "timeline-id": 11
+  },
+  {
+    "organization": "Camp Ketcha - Scarburough ME",
+    "title": "Senior Camp Counselor",
+    "description": "As a camp counselor, I enjoyed working with a wide range of ages and interests as I ran many different specialty camps and overnight excursions. I earned rookie counselor of the year for these efforts.",
+    "start": "2023-05-02",
+    "end": "2023-09-01",
+    "type": "employment",
+    "thumbnail": "ketcha.png",
+    "timeline-id": 7
+  },
+  {
+    "organization": "Northeastern University",
+    "title": "Began Attending Northeastern",
+    "description": "In september of 2023 I began my journey at northeastern, which will take 5 years and 3 co-ops.",
+    "start": "2023-09-01",
+    "end": "2028-04-01",
+    "type": "extracurricular",
+    "thumbnail": "nu.png",
+    "timeline-id": 8
+  },
+  {
+    "organization": "Northeastern Ski Team",
+    "title": "Coach / Photographer / Secretary",
+    "description": "After 4 acl tears in my left knee, I decided to move to an advisory role on the club ski team, where I use my skiing, organizational, and photgraphy skills to continue helping the team.",
+    "start": "2025-01-01",
+    "end": "2025-04-01",
+    "type": "employment",
+    "thumbnail": "nuski.png",
+    "timeline-id": 9
+  },
+  {
+    "organization": "Northeastern",
+    "title": "Fundies 1 TA",
+    "description": "For my first TA job, I went back to the basics with the fundamentals of computer science 1 accelerated section, where I helped students by facilitating office hours, running labs, and providing feedback.",
+    "start": "2024-09-01",
+    "end": "2024-12-01",
+    "type": "employment",
+    "thumbnail": "koury.png",
+    "timeline-id": 3
+  },
+  {
+    "organization": "Northeastern",
+    "title": "Fundies 2 TA",
+    "description": "Following the bonds made with students from my previous semester TAing, I continued my journy in the accel section of fundies 2.",
+    "start": "2025-01-01",
+    "end": "2025-04-01",
+    "type": "employment",
+    "thumbnail": "koury.png",
+    "timeline-id": 4
+  },
+  {
+    "organization": "Gould Academy",
+    "title": "Graduation",
+    "description": "I graduated Gould Academy as salutatorian, putting an official end to my 12 year competative alpine ski racing career.",
+    "start": "2023-05-01",
+    "end": "2023-05-01",
+    "type": "education",
+    "thumbnail": "gould.png",
+    "timeline-id": 5
+  },
+  {
+    "organization": "Northeastern Electric Racing",
+    "title": "Software Developer",
+    "description": "During the second semester of my freshmen year, I joined NER as a software developer, working on backend and frontend tickets for our websites home page.",
+    "start": "2024-01-01",
+    "end": "2024-01-01",
+    "type": "extracurricular",
+    "thumbnail": "ner.png",
+    "timeline-id": 6
+  },
+  {
+    "organization": "CodeWiz - Westford Ma",
+    "title": "Coding Coach and Brand Ambassador",
+    "description": "Taught children ages 7-13 a variety of programming languages and skills including python, java, scratch, and robotics. Additionally represented brand at marketing events by recruiting potential new members.",
+    "start": "2024-05-01",
+    "end": "2024-08-01",
+    "type": "employment",
+    "thumbnail": "codewiz.png",
+    "timeline-id": 0
+  },
+  {
+    "organization": "Gould Academy",
+    "title": "Computer Science Club Co-Founder",
+    "description": "During my senior year I co-founded the gould computer science club where we taught students basic programming and robotics skills.",
+    "start": "2022-09-01",
+    "end": "2022-09-01",
+    "type": "education",
+    "thumbnail": "csclub.png",
+    "timeline-id": 13
+  },
+  {
+    "organization": "Camden Conference",
+    "title": "Bill Taylor Essay Contest Winner",
+    "description": "In my essay 'Assessing Internet Inequality in the US', I analyzed the effects of internet inequality and argued for regulations and legislation that could help this pressing issue. <a href=\"https://www.camdenconference.org/winners-bill-taylor-essay-contest-2023/?fbclid=IwAR3WCJe7GC38oGlZPn8yVNuwhMJJxr8bYD8UTIV7ysne8INnB_gvp8bvbxk&cn-reloaded=1\">Read more here.</a>",
+    "start": "2023-04-01",
+    "end": "2023-04-01",
+    "type": "award",
+    "thumbnail": "camden.png",
+    "timeline-id": 2
+  }
+]
