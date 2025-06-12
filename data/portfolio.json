@@ -20,46 +20,66 @@
   "projects": [
     {
       "id": "1",
-      "title": "Convolutional Neural Network From Scratch",
-      "categories": ["Python", "Machine Learning", "Mathematics"],
-      "imageSrc": "/images/projects/numbers.png",
-      "fileName": "Convolutional-Neural-Network.md"
+      "title": "Ski Racing Bib Recognition and Image Processing",
+      "categories": ["Python", "Machine Learning", "YOLO"],
+      "imageSrc": "/images/projects/skiing.png",
+      "externalLink": "https://github.com/chpy04/SkiRacingImageProcessing"
     },
     {
       "id": "2",
-      "title": "Time Series ML Model to Predict Ecuadorian Store Sales",
-      "categories": ["Python", "Machine Learning", "Data Analysis"],
-      "imageSrc": "/images/projects/gradient.png",
-      "fileName": "Time-Series-Model.md"
+      "title": "Interactive File Review System",
+      "categories": ["React", "Typescript", "Prisma"],
+      "imageSrc": "/images/projects/partReviewCropped.gif",
+      "externalLink": "https://github.com/Northeastern-Electric-Racing/FinishLine"
     },
     {
       "id": "3",
       "title": "Image Compressor with Seam Carving Algorithm",
       "categories": ["Java", "Dynamic Programming", "Algorithms", "Deques"],
       "imageSrc": "/images/projects/squeeze.gif",
-      "fileName": "Photo-Compressor.md"
+      "externalLink": "https://github.com/chpy04/SeamCarver"
     },
     {
       "id": "4",
-      "title": "Rush Hour Game",
-      "categories": ["Java", "Object Oriented Design", "Game Development"],
-      "imageSrc": "/images/projects/RH.gif",
-      "fileName": "Rush-Hour.md"
+      "title": "Time Series ML Model to Predict Ecuadorian Store Sales",
+      "categories": ["Python", "Machine Learning", "Data Analysis"],
+      "imageSrc": "/images/projects/gradient.png",
+      "fileName": "Time-Series-Model.md"
     },
     {
       "id": "5",
       "title": "Maze Generator and Solver",
       "categories": ["Java", "Algorithms", "Data Structures"],
       "imageSrc": "/images/projects/maze.gif",
-      "fileName": "Maze-Solver.md"
+      "externalLink": "https://github.com/chpy04/maze-solver"
     },
     {
       "id": "6",
+      "title": "Convolutional Neural Network From Scratch",
+      "categories": ["Python", "Machine Learning", "Mathematics"],
+      "imageSrc": "/images/projects/numbers.png",
+      "fileName": "Convolutional-Neural-Network.md"
+    },
+    {
+      "id": "7",
       "title": "Three Trios Card Game",
       "categories": ["Java", "Object Oriented Design", "MVC Pattern", "AI"],
       "imageSrc": "/images/projects/threeTrios.gif",
-      "fileName": "three-trios.md",
       "externalLink": "https://github.com/chpy04/ThreeTriosCardGame"
+    },
+    {
+      "id": "8",
+      "title": "Weight A Minute -- Fitness Tracker Proof of Concept",
+      "categories": ["SQL", "Database Design", "Python"],
+      "imageSrc": "/images/projects/weightAMinute.jpeg",
+      "externalLink": "https://github.com/dreifusjack/Weight-A-Minute"
+    },
+    {
+      "id": "9",
+      "title": "Rush Hour Game",
+      "categories": ["Java", "Object Oriented Design", "Game Development"],
+      "imageSrc": "/images/projects/RH.gif",
+      "externalLink": "https://github.com/chpy04/rush-hour"
     }
   ],
   "aboutpara": "I'm a second-year computer science and Mathematics student studying at Northeastern University, looking to graduate spring 2027. Currently, on top of my studies, I is working as a tech lead at Northeastern Electric Racing, where my team is implementing a design review process for engineers to upload, review, iterate, and approve CAD files for the car on our custom project management site. Additionally, I am a teaching assistant for the accel section of Fundamentals of Computer Science 2, the secretary for the Alpine Ski Team, and a brother at Delta Kappa Epsilon. My main technical interests include database design, backend web development, machine learning, and object-oriented design. Non-technically, you will find me on the slopes of ski mountains, hiking through the woods, or in an obscure coffee shop in boston"
