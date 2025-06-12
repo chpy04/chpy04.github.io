@@ -7,23 +7,29 @@ interface TimelineItemProps {
   title: string;
   description: string;
   start: string;
-  end: string;
+  end?: string;
   type: string;
   thumbnail: string;
   "timeline-id": number;
 }
 
-const formatDateRange = (start: string, end: string): string => {
+const formatDateRange = (start: string, end?: string): string => {
   const startDate = new Date(start);
-  const endDate = new Date(end);
+  const endDate = end ? new Date(end) : undefined;
 
   const startMonth = startDate.toLocaleString("default", { month: "long" });
-  const endMonth = endDate.toLocaleString("default", { month: "long" });
+  const endMonth = endDate
+    ? endDate.toLocaleString("default", { month: "long" })
+    : "";
   const startYear = startDate.getFullYear();
-  const endYear = endDate.getFullYear();
+  const endYear = endDate ? endDate.getFullYear() : "";
 
   if (startYear === endYear) {
     return `${startMonth} - ${endMonth} ${startYear}`;
+  }
+
+  if (!endDate) {
+    return `${startMonth} ${startYear} - Present`;
   }
 
   return `${startMonth} ${startYear} - ${endMonth} ${endYear}`;

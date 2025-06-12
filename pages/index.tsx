@@ -105,7 +105,7 @@ export default function Home() {
           handleResumeScroll={handleResumeScroll}
           handleTimelineScroll={handleTimelineScroll}
         />
-        <div className="mt-2 laptop:mt-20">
+        <div className="mt-2 laptop:mt-20 px-[5%]">
           <div className="mt-2 flex flex-col laptop:flex-row items-start justify-between gap-8">
             <div className="flex-1">
               <div className="mt-2 relative">
@@ -153,14 +153,15 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div className="mt-24 p-2 laptop:p-0" ref={projectsRef}>
+        <div className="mt-24 px-[5%]" ref={projectsRef}>
           <h1 className="tablet:m-10 text-3xl font-bold mb-6">Projects</h1>
-          <div className="mt-5 laptop:mt-10 grid grid-cols-1 tablet:grid-cols-3 gap-4">
+          <div className="mt-5 laptop:mt-10 grid grid-cols-1 tablet:grid-cols-3 gap-6 laptop:gap-8">
             {data.projects.map((project) => (
               <ProjectCard
                 key={project.id}
                 img={project.imageSrc}
                 name={project.title}
+                subtitle={project.subtitle}
                 categories={project.categories}
                 fileName={project.fileName}
                 externalLink={project.externalLink}
@@ -170,8 +171,8 @@ export default function Home() {
         </div>
 
         <div className="mt-24 p-2 laptop:p-0" ref={aboutRef}>
-          <h1 className="tablet:m-10 text-3xl font-bold mb-6">About</h1>
-          <p className="tablet:m-10 mt-2 text-xl laptop:text-3xl w-full laptop:w-3/5">
+          <h1 className="tablet:m-10 px-[5%] text-3xl font-bold mb-6">About</h1>
+          <p className="tablet:m-10 mt-2 text-lg laptop:text-xl w-full px-[5%]">
             {data.aboutpara}
           </p>
         </div>
@@ -180,13 +181,24 @@ export default function Home() {
           className="mt-24 p-2 laptop:p-0 hidden tablet:block"
           ref={timelineRef}
         >
-          <h1 className="tablet:m-10 text-3xl font-bold mb-6">Timeline</h1>
+          <h1 className="tablet:m-10 text-3xl font-bold mb-6 px-[5%]">
+            Timeline
+          </h1>
           <Timeline />
         </div>
 
         <div className="mt-24 p-2 laptop:p-0" ref={resumeRef}>
-          <h1 className="tablet:m-10 text-3xl font-bold mb-6">Resume</h1>
-          <div className="mt-5 w-full flex flex-col items-center">
+          <div className="tablet:m-10 flex justify-between items-center mb-6">
+            <h1 className="text-3xl font-bold px-[5%]">Resume</h1>
+            <a
+              href="/Chris-Pyle-CV.pdf"
+              download
+              className="px-6 py-3 border border-white rounded-lg hover:bg-slate-800 hover:scale-105 transition-all ease-out duration-300 link"
+            >
+              Download Resume
+            </a>
+          </div>
+          <div className="mt-5 w-full flex flex-col items-center px-[5%]">
             <div className="w-full max-w-4xl relative">
               <div className="absolute -inset-12 bg-gradient-to-r from-[rgba(248,107,223,0.4)] to-[rgba(107,107,248,0.3)] rounded-lg blur-3xl opacity-30"></div>
               <Image
@@ -198,13 +210,6 @@ export default function Home() {
                 priority
               />
             </div>
-            <a
-              href="/Resume.pdf"
-              download
-              className="mt-8 px-6 py-3 border border-white rounded-lg hover:bg-slate-800 hover:scale-105 transition-all ease-out duration-300 link"
-            >
-              Download PDF
-            </a>
           </div>
         </div>
       </div>

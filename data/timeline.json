@@ -10,7 +10,7 @@
     "timeline-id": 0
   },
   {
-    "organization": "Northeastern Electric Racing",
+    "organization": "Electric Racing Club",
     "title": "Technical Lead",
     "description": "In the Beginning of my sophomore year, I was promoted to tech lead, where I oversee a team of developers to design and produce features on a semesterly basis, such as a part review system where users can mark up pdfs!",
     "start": "2025-01-01",
@@ -44,8 +44,7 @@
     "title": "Began Attending Northeastern",
     "description": "In september of 2023 I began my journey at northeastern, which will take 5 years and 3 co-ops.",
     "start": "2023-09-01",
-    "end": "2028-04-01",
-    "type": "extracurricular",
+    "type": "education",
     "thumbnail": "nu.png",
     "timeline-id": 4
   },
@@ -54,8 +53,7 @@
     "title": "Coach / Photographer / Secretary",
     "description": "After 4 acl tears in my left knee, I decided to move to an advisory role on the club ski team, where I use my skiing, organizational, and photgraphy skills to continue helping the team.",
     "start": "2025-01-01",
-    "end": "2025-04-01",
-    "type": "employment",
+    "type": "extracurricular",
     "thumbnail": "nuski.png",
     "timeline-id": 5
   },
@@ -90,7 +88,7 @@
     "timeline-id": 8
   },
   {
-    "organization": "Northeastern Electric Racing",
+    "organization": "Electric Racing Club",
     "title": "Software Developer",
     "description": "During the second semester of my freshmen year, I joined NER as a software developer, working on backend and frontend tickets for our websites home page.",
     "start": "2024-01-01",
@@ -115,7 +113,7 @@
     "description": "During my senior year I co-founded the gould computer science club where we taught students basic programming and robotics skills.",
     "start": "2022-09-01",
     "end": "2022-09-01",
-    "type": "education",
+    "type": "extracurricular",
     "thumbnail": "csclub.png",
     "timeline-id": 11
   },
@@ -134,19 +132,26 @@
     "title": "Scholarship Chair",
     "description": "Having been a brother for over a year, I was elected as the scholarship chair to oversee and ensure academic excellence throughout our fraternity. I am also leading the development of our custom NextJS website!",
     "start": "2025-09-01",
-    "end": "2026-01-01",
     "type": "extracurricular",
     "thumbnail": "dke.png",
     "timeline-id": 13
   },
   {
-    "organization": "Northeastern Electric Racing",
+    "organization": "Electric Racing Club",
     "title": "Head of Web Development",
     "description": "After working as a tech lead for a year, I was promoted to the head of web development, where I manage all development and technical operation of our custom project management site. I lead a team of 8 tech leads and 60+ developers to produce new features every semester!",
     "start": "2025-09-01",
-    "end": "2026-09-01",
     "type": "extracurricular",
     "thumbnail": "ner.png",
+    "timeline-id": 14
+  },
+  {
+    "organization": "Gould Academy",
+    "title": "Alpine Ski Racer",
+    "description": "I have been alpine ski racing since I was 6 years old, with my journey peaking in high school where I competed at the international level with sub 90 FIS points in slalom and giant slalom",
+    "start": "2010-09-01",
+    "type": "extracurricular",
+    "thumbnail": "skier.JPEG",
     "timeline-id": 14
   }
 ]

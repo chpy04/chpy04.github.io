@@ -1,6 +1,6 @@
 {
   "name": "Chris Pyle",
-  "headerTaglineOne": "Hey there, my name is",
+  "headerTaglineOne": "Hey there, this is",
   "headerTaglineTwo": "Chris Pyle",
   "headerTaglineThree": "Student and Software Developer ",
   "headerTaglineFour": "at Northeastern University",
@@ -20,7 +20,8 @@
   "projects": [
     {
       "id": "1",
-      "title": "Ski Racing Bib Recognition and Image Processing",
+      "title": "Ski Racing Bib Recognition",
+      "subtitle": "User Interface and Machine Learning Model to Recognize Bibs and Bulk Sort Images by Racer and Team",
       "categories": ["Python", "Machine Learning", "YOLO"],
       "imageSrc": "/images/projects/skiing.png",
       "externalLink": "https://github.com/chpy04/SkiRacingImageProcessing"
@@ -28,20 +29,23 @@
     {
       "id": "2",
       "title": "Interactive File Review System",
+      "subtitle": "Version Management and Markup System For Users to Review and Approve CAD Part Drawings",
       "categories": ["React", "Typescript", "Prisma"],
       "imageSrc": "/images/projects/partReviewCropped.gif",
       "externalLink": "https://github.com/Northeastern-Electric-Racing/FinishLine"
     },
     {
       "id": "3",
-      "title": "Image Compressor with Seam Carving Algorithm",
+      "title": "Image Compressor",
+      "subtitle": "Uses Seam Carving Algorithm to Compress Images While Losing Minimal Information",
       "categories": ["Java", "Dynamic Programming", "Algorithms", "Deques"],
       "imageSrc": "/images/projects/squeeze.gif",
       "externalLink": "https://github.com/chpy04/SeamCarver"
     },
     {
       "id": "4",
-      "title": "Time Series ML Model to Predict Ecuadorian Store Sales",
+      "title": "Ecuadorian Store Sales Forcasting",
+      "subtitle": "Time Series Machine Learning Model to Predict Store Sales in Ecuador Using XG Boost",
       "categories": ["Python", "Machine Learning", "Data Analysis"],
       "imageSrc": "/images/projects/gradient.png",
       "fileName": "Time-Series-Model.md"
@@ -49,13 +53,15 @@
     {
       "id": "5",
       "title": "Maze Generator and Solver",
+      "subtitle": "Visually Displays Kruskal's Algorithm to Generate Mazes and DFS/BFS to Solve Them",
       "categories": ["Java", "Algorithms", "Data Structures"],
       "imageSrc": "/images/projects/maze.gif",
       "externalLink": "https://github.com/chpy04/maze-solver"
     },
     {
       "id": "6",
-      "title": "Convolutional Neural Network From Scratch",
+      "title": "Convolutional Neural Network",
+      "subtitle": "Multi-Layered Network Built From Scratch Using only NumPy to Classify Handwritten Digits",
       "categories": ["Python", "Machine Learning", "Mathematics"],
       "imageSrc": "/images/projects/numbers.png",
       "fileName": "Convolutional-Neural-Network.md"
@@ -63,13 +69,15 @@
     {
       "id": "7",
       "title": "Three Trios Card Game",
+      "subtitle": "Multiplayer Card Game with AI Opponents and Swappable UI",
       "categories": ["Java", "Object Oriented Design", "MVC Pattern", "AI"],
       "imageSrc": "/images/projects/threeTrios.gif",
       "externalLink": "https://github.com/chpy04/ThreeTriosCardGame"
     },
     {
       "id": "8",
-      "title": "Weight A Minute -- Fitness Tracker Proof of Concept",
+      "title": "Weight A Minute -- Fitness Tracker",
+      "subtitle": "Fitness Tracker Connecting Trainers and Users Providing Workouts Based on User's Gym Equipment",
       "categories": ["SQL", "Database Design", "Python"],
       "imageSrc": "/images/projects/weightAMinute.jpeg",
       "externalLink": "https://github.com/dreifusjack/Weight-A-Minute"
@@ -77,6 +85,7 @@
     {
       "id": "9",
       "title": "Rush Hour Game",
+      "subtitle": "ClassicPuzzle Game with Reversable Moves, Customizable Levels, and Swappable Rulesets",
       "categories": ["Java", "Object Oriented Design", "Game Development"],
       "imageSrc": "/images/projects/RH.gif",
       "externalLink": "https://github.com/chpy04/rush-hour"
