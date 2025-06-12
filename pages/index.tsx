@@ -190,7 +190,7 @@ export default function Home() {
             <div className="w-full max-w-4xl relative">
               <div className="absolute -inset-12 bg-gradient-to-r from-[rgba(248,107,223,0.4)] to-[rgba(107,107,248,0.3)] rounded-lg blur-3xl opacity-30"></div>
               <Image
-                src="/resume.png"
+                src="/images/resume.png"
                 alt="Resume"
                 width={1200}
                 height={1600}
