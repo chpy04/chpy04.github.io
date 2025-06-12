@@ -7,17 +7,17 @@
     "end": "2024-09-01",
     "type": "employment",
     "thumbnail": "unicode.png",
-    "timeline-id": 12
+    "timeline-id": 0
   },
   {
     "organization": "Northeastern Electric Racing",
-    "title": "Head of Web Dev",
-    "description": "Over the course of my sophomore year, I was promoted to tech lead and then head of web development, where I oversee tech leads to push out new features on a semesterly basis, such as a part review system where users can mark up pdfs!",
+    "title": "Technical Lead",
+    "description": "In the Beginning of my sophomore year, I was promoted to tech lead, where I oversee a team of developers to design and produce features on a semesterly basis, such as a part review system where users can mark up pdfs!",
     "start": "2025-01-01",
     "end": "2025-06-01",
     "type": "extracurricular",
     "thumbnail": "ner.png",
-    "timeline-id": 10
+    "timeline-id": 1
   },
   {
     "organization": "Unicode",
@@ -27,7 +27,7 @@
     "end": "2023-09-01",
     "type": "employment",
     "thumbnail": "unicode.png",
-    "timeline-id": 11
+    "timeline-id": 2
   },
   {
     "organization": "Camp Ketcha - Scarburough ME",
@@ -37,7 +37,7 @@
     "end": "2023-09-01",
     "type": "employment",
     "thumbnail": "ketcha.png",
-    "timeline-id": 7
+    "timeline-id": 3
   },
   {
     "organization": "Northeastern University",
@@ -47,7 +47,7 @@
     "end": "2028-04-01",
     "type": "extracurricular",
     "thumbnail": "nu.png",
-    "timeline-id": 8
+    "timeline-id": 4
   },
   {
     "organization": "Northeastern Ski Team",
@@ -57,7 +57,7 @@
     "end": "2025-04-01",
     "type": "employment",
     "thumbnail": "nuski.png",
-    "timeline-id": 9
+    "timeline-id": 5
   },
   {
     "organization": "Northeastern",
@@ -67,7 +67,7 @@
     "end": "2024-12-01",
     "type": "employment",
     "thumbnail": "koury.png",
-    "timeline-id": 3
+    "timeline-id": 6
   },
   {
     "organization": "Northeastern",
@@ -77,7 +77,7 @@
     "end": "2025-04-01",
     "type": "employment",
     "thumbnail": "koury.png",
-    "timeline-id": 4
+    "timeline-id": 7
   },
   {
     "organization": "Gould Academy",
@@ -87,7 +87,7 @@
     "end": "2023-05-01",
     "type": "education",
     "thumbnail": "gould.png",
-    "timeline-id": 5
+    "timeline-id": 8
   },
   {
     "organization": "Northeastern Electric Racing",
@@ -97,7 +97,7 @@
     "end": "2024-01-01",
     "type": "extracurricular",
     "thumbnail": "ner.png",
-    "timeline-id": 6
+    "timeline-id": 9
   },
   {
     "organization": "CodeWiz - Westford Ma",
@@ -107,7 +107,7 @@
     "end": "2024-08-01",
     "type": "employment",
     "thumbnail": "codewiz.png",
-    "timeline-id": 0
+    "timeline-id": 10
   },
   {
     "organization": "Gould Academy",
@@ -117,7 +117,7 @@
     "end": "2022-09-01",
     "type": "education",
     "thumbnail": "csclub.png",
-    "timeline-id": 13
+    "timeline-id": 11
   },
   {
     "organization": "Camden Conference",
@@ -127,6 +127,26 @@
     "end": "2023-04-01",
     "type": "award",
     "thumbnail": "camden.png",
-    "timeline-id": 2
+    "timeline-id": 12
+  },
+  {
+    "organization": "Delta Kappa Epsilon",
+    "title": "Scholarship Chair",
+    "description": "Having been a brother for over a year, I was elected as the scholarship chair to oversee and ensure academic excellence throughout our fraternity. I am also leading the development of our custom NextJS website!",
+    "start": "2025-09-01",
+    "end": "2026-01-01",
+    "type": "extracurricular",
+    "thumbnail": "dke.png",
+    "timeline-id": 13
+  },
+  {
+    "organization": "Northeastern Electric Racing",
+    "title": "Head of Web Development",
+    "description": "After working as a tech lead for a year, I was promoted to the head of web development, where I manage all development and technical operation of our custom project management site. I lead a team of 8 tech leads and 60+ developers to produce new features every semester!",
+    "start": "2025-09-01",
+    "end": "2026-09-01",
+    "type": "extracurricular",
+    "thumbnail": "ner.png",
+    "timeline-id": 14
   }
 ]
