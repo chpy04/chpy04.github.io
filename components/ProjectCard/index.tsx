@@ -69,7 +69,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
   return (
     <>
-      <div className="overflow-hidden rounded-lg p-2 laptop:p-3 first:ml-0 w-full border border-gray-700 hover:border-gray-500 transition-all duration-300 hover:scale-105 relative cursor-pointer">
+      <div className="overflow-hidden rounded-lg p-2 laptop:p-3 first:ml-0 w-full border border-gray-700 hover:border-gray-500 transition-all duration-300 hover:scale-105 relative select-none">
         <h1 className="mb-3 text-2xl font-medium">
           {name ? name : "Project Name"}
         </h1>
@@ -98,7 +98,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           <div className="group relative">
             <button
               onClick={handleIconClick}
-              className="absolute bottom-3 right-3 p-2 bg-slate-800 rounded-full hover:bg-slate-700 transition-all duration-300 hover:scale-110 border border-gray-600 hover:border-gray-400"
+              className="absolute bottom-3 right-3 p-2 bg-slate-800 rounded-full hover:bg-slate-700 transition-all duration-300 hover:scale-110 border border-gray-600 hover:border-gray-400 cursor-pointer"
               aria-label={
                 externalLink ? "View on GitHub" : "View project details"
               }

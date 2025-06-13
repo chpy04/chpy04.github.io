@@ -10,15 +10,6 @@ import { Timeline } from "../components/Timeline/Timeline";
 
 import data from "../data/portfolio.json";
 
-interface Project {
-  id: string;
-  imageSrc: string;
-  title: string;
-  categories: string[];
-  fileName: string;
-  externalLink?: string;
-}
-
 export default function Home() {
   const projectsRef = useRef<HTMLDivElement>(null);
   const aboutRef = useRef<HTMLDivElement>(null);
@@ -84,7 +75,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="relative hide-scrollbar">
+    <div className="relative hide-scrollbar select-none">
       <Head>
         <title>{data.name}</title>
         <link rel="icon" href="/favicon.ico" />
@@ -109,14 +100,14 @@ export default function Home() {
           <div className="mt-2 flex flex-col laptop:flex-row items-start justify-between gap-8">
             <div className="flex-1">
               <div className="mt-2 relative">
-                <div className="hidden laptop:block laptop:absolute laptop:right-16 laptop:top-0 laptop:w-[400px]">
+                <div className="hidden laptop:block laptop:absolute laptop:right-16 laptop:top-0 laptop:w-[25vw]">
                   <div className="relative">
                     <div className="absolute -inset-3 bg-gradient-to-r from-[rgba(248,107,223,0.4)] to-[rgba(107,107,248,0.3)] rounded-lg blur-2xl opacity-20"></div>
                     <Image
                       src="/images/headshot.jpg"
                       alt="Profile Headshot"
-                      width={400}
-                      height={400}
+                      width={1000}
+                      height={1000}
                       className="rounded-full shadow-lg relative w-full h-auto"
                       priority
                     />
