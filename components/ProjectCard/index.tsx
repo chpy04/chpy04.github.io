@@ -69,7 +69,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
   return (
     <>
-      <div className="overflow-hidden rounded-lg p-2 laptop:p-3 first:ml-0 w-full border border-gray-700 hover:border-gray-500 transition-all duration-300 hover:scale-105 relative">
+      <div className="overflow-hidden rounded-lg p-2 laptop:p-3 first:ml-0 w-full border border-gray-700 hover:border-gray-500 transition-all duration-300 hover:scale-105 relative cursor-pointer">
         <h1 className="mb-3 text-2xl font-medium">
           {name ? name : "Project Name"}
         </h1>
@@ -83,27 +83,32 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             priority={false}
           />
         </div>
-        <h2 className="mt-2 text-sm font-medium mr-10">{subtitle}</h2>
+        <h2 className="mt-2 text-sm font-medium mr-[15%]">{subtitle}</h2>
         <div className="flex flex-wrap gap-1.5 mt-1.5">
           {categories?.map((category, index) => (
             <span
               key={index}
-              className="px-2 py-0.5 bg-blue-500/20 text-blue-300 rounded-full text-xs"
+              className="px-2 py-0.5 bg-blue-500/10 text-blue-300/80 rounded-full text-xs border border-blue-500/20"
             >
               {category}
             </span>
           ))}
         </div>
         {(externalLink || fileName) && (
-          <button
-            onClick={handleIconClick}
-            className="absolute bottom-3 right-3 p-2 bg-slate-800/80 rounded-full hover:bg-slate-700/80 transition-all duration-300 hover:scale-110"
-            aria-label={
-              externalLink ? "View on GitHub" : "View project details"
-            }
-          >
-            {renderIcon()}
-          </button>
+          <div className="group relative">
+            <button
+              onClick={handleIconClick}
+              className="absolute bottom-3 right-3 p-2 bg-slate-800 rounded-full hover:bg-slate-700 transition-all duration-300 hover:scale-110 border border-gray-600 hover:border-gray-400"
+              aria-label={
+                externalLink ? "View on GitHub" : "View project details"
+              }
+            >
+              {renderIcon()}
+            </button>
+            <div className="absolute bottom-14 right-3 px-2 py-1 bg-slate-800 text-white text-sm rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 group-hover:delay-500 whitespace-nowrap border border-gray-600">
+              {externalLink ? "View on GitHub" : "View project details"}
+            </div>
+          </div>
         )}
       </div>
       {fileName && !externalLink && (

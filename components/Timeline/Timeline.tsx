@@ -17,7 +17,6 @@ export const Timeline: React.FC = () => {
   const availableWidth = 100 - leftPadding - rightPadding;
   const spacing = availableWidth / (sortedItems.length - 1);
 
-
   const years = [2022, 2023, 2024, 2025];
   const yearSpacing = 100 / (years.length + 1);
 
@@ -81,11 +80,11 @@ export const Timeline: React.FC = () => {
             // Calculate z-index based on selected state and position
             let zIndex;
             if (isSelected) {
-              zIndex = 100; // Selected item always on top
+              zIndex = 40; // Selected item below header
             } else if (selectedIndex !== null) {
               // When something is selected, stack based on distance
               const distanceFromSelected = Math.abs(index - selectedIndex);
-              zIndex = 50 - distanceFromSelected;
+              zIndex = 30 - distanceFromSelected;
             } else {
               // Default state: most recent items on top
               zIndex = sortedItems.length - index;

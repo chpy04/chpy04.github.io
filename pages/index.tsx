@@ -32,7 +32,7 @@ export default function Home() {
   const handleProjectsScroll = () => {
     if (projectsRef.current) {
       window.scrollTo({
-        top: projectsRef.current.offsetTop,
+        top: projectsRef.current.offsetTop - 20,
         behavior: "smooth",
       });
     }
@@ -41,7 +41,7 @@ export default function Home() {
   const handleAboutScroll = () => {
     if (aboutRef.current) {
       window.scrollTo({
-        top: aboutRef.current.offsetTop,
+        top: aboutRef.current.offsetTop - 20,
         left: 0,
         behavior: "smooth",
       });
@@ -51,7 +51,7 @@ export default function Home() {
   const handleResumeScroll = () => {
     if (resumeRef.current) {
       window.scrollTo({
-        top: resumeRef.current.offsetTop,
+        top: resumeRef.current.offsetTop - 20,
         left: 0,
         behavior: "smooth",
       });
@@ -61,7 +61,7 @@ export default function Home() {
   const handleTimelineScroll = () => {
     if (timelineRef.current) {
       window.scrollTo({
-        top: timelineRef.current.offsetTop,
+        top: timelineRef.current.offsetTop - 20,
         left: 0,
         behavior: "smooth",
       });

@@ -28,7 +28,7 @@ const Button: React.FC<ButtonProps> = ({
     <button
       onClick={onClick}
       type="button"
-      className={`text-sm tablet:text-base p-1 laptop:p-2 m-1 laptop:m-2 rounded-lg flex items-center transition-all ease-out duration-300 hover:bg-slate-600 text-white hover:scale-105 active:scale-100 tablet:first:ml-0 ${classes} link`}
+      className={`text-sm tablet:text-base p-1 laptop:p-2 m-1 laptop:m-2 rounded-lg flex items-center transition-all ease-out duration-300 hover:bg-slate-600 text-white hover:scale-105 active:scale-100 tablet:first:ml-0 [text-shadow:_0_1px_0_rgb(0_0_0_/_40%)] ${classes} link`}
     >
       {children}
     </button>

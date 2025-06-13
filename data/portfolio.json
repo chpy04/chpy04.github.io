@@ -21,10 +21,10 @@
     {
       "id": "1",
       "title": "Ski Racing Bib Recognition",
-      "subtitle": "User Interface and Machine Learning Model to Recognize Bibs and Bulk Sort Images by Racer and Team",
+      "subtitle": "Custom Machine Learning Model and UI to Recognize Bibs and Bulk Sort Images by Racer and Team",
       "categories": ["Python", "Machine Learning", "YOLO"],
       "imageSrc": "/images/projects/skiing.png",
-      "externalLink": "https://github.com/chpy04/SkiRacingImageProcessing"
+      "externalLink": "https://github.com/chpy04/SkiRacingImageProcessing#ski-racing-image-processor"
     },
     {
       "id": "2",
@@ -32,7 +32,7 @@
       "subtitle": "Version Management and Markup System For Users to Review and Approve CAD Part Drawings",
       "categories": ["React", "Typescript", "Prisma"],
       "imageSrc": "/images/projects/partReviewCropped.gif",
-      "externalLink": "https://github.com/Northeastern-Electric-Racing/FinishLine"
+      "externalLink": "https://github.com/Northeastern-Electric-Racing/FinishLine?tab=readme-ov-file#finishline-by-ner"
     },
     {
       "id": "3",
@@ -40,7 +40,7 @@
       "subtitle": "Uses Seam Carving Algorithm to Compress Images While Losing Minimal Information",
       "categories": ["Java", "Dynamic Programming", "Algorithms", "Deques"],
       "imageSrc": "/images/projects/squeeze.gif",
-      "externalLink": "https://github.com/chpy04/SeamCarver"
+      "externalLink": "https://github.com/chpy04/SeamCarver?tab=readme-ov-file#image-compressor-with-seam-carving-algorithm"
     },
     {
       "id": "4",
@@ -56,7 +56,7 @@
       "subtitle": "Visually Displays Kruskal's Algorithm to Generate Mazes and DFS/BFS to Solve Them",
       "categories": ["Java", "Algorithms", "Data Structures"],
       "imageSrc": "/images/projects/maze.gif",
-      "externalLink": "https://github.com/chpy04/maze-solver"
+      "externalLink": "https://github.com/chpy04/maze-solver?tab=readme-ov-file#maze-generator-and-solver"
     },
     {
       "id": "6",
@@ -72,7 +72,7 @@
       "subtitle": "Multiplayer Card Game with AI Opponents and Swappable UI",
       "categories": ["Java", "Object Oriented Design", "MVC Pattern", "AI"],
       "imageSrc": "/images/projects/threeTrios.gif",
-      "externalLink": "https://github.com/chpy04/ThreeTriosCardGame"
+      "externalLink": "https://github.com/chpy04/ThreeTriosCardGame/tree/main?tab=readme-ov-file#three-trios-card-game"
     },
     {
       "id": "8",
@@ -80,15 +80,15 @@
       "subtitle": "Fitness Tracker Connecting Trainers and Users Providing Workouts Based on User's Gym Equipment",
       "categories": ["SQL", "Database Design", "Python"],
       "imageSrc": "/images/projects/weightAMinute.jpeg",
-      "externalLink": "https://github.com/dreifusjack/Weight-A-Minute"
+      "externalLink": "https://github.com/dreifusjack/Weight-A-Minute?tab=readme-ov-file#weight-a-minute--spring2025-cs3200-project"
     },
     {
       "id": "9",
       "title": "Rush Hour Game",
-      "subtitle": "ClassicPuzzle Game with Reversable Moves, Customizable Levels, and Swappable Rulesets",
+      "subtitle": "Classic Puzzle Game with Reversable Moves, Customizable Levels, and Swappable Rulesets",
       "categories": ["Java", "Object Oriented Design", "Game Development"],
       "imageSrc": "/images/projects/RH.gif",
-      "externalLink": "https://github.com/chpy04/rush-hour"
+      "externalLink": "https://github.com/chpy04/rush-hour?tab=readme-ov-file#rush-hour-game"
     }
   ],
   "aboutpara": "I'm a third-year student studying computer science and mathematics at Northeastern University, with plans to graduate in spring 2027. On top of my studies, I am currently working as the head of web development at Northeastern Electric Racing, and am a regular volunteer at The Unicode Consortium writing code for their Adopt A Character program. Additionally, I am a teaching assistant for the accel section of Fundamentals of Computer Science 2, the treasurer for the Alpine Ski Team, and the scholarship chair at Delta Kappa Epsilon. My main technical interests include database design, backend web development, machine learning, and object-oriented design. Non-technically, you will find me on the slopes of ski mountains, hiking through the woods, or in an obscure coffee shop in Boston!"
