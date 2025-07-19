@@ -35,6 +35,14 @@
       "externalLink": "https://github.com/Northeastern-Electric-Racing/FinishLine?tab=readme-ov-file#finishline-by-ner"
     },
     {
+      "id": "10",
+      "title": "Bitboard Chess Engine",
+      "subtitle": "Bitboard Chess Engine in C with Alpha Beta Pruning, Search Extensions, and Positional Evaluation",
+      "categories": ["C", "Golang", "Algorithms", "Websockets"],
+      "imageSrc": "/images/projects/chess.gif",
+      "externalLink": "https://github.com/chpy04/chess?tab=readme-ov-file#bitboard-chess-engine"
+    },
+    {
       "id": "3",
       "title": "Image Compressor",
       "subtitle": "Uses Seam Carving Algorithm to Compress Images While Losing Minimal Information",
