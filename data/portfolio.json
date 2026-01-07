@@ -76,6 +76,14 @@
     },
     {
       "id": "7",
+      "title": "Delta Kappa Epsilon Website",
+      "subtitle": "Recruitement website for the Delta Kappa Epsilon fraternity at Northeastern University",
+      "categories": ["NextJS", "React", "TailwindCSS"],
+      "imageSrc": "/images/projects/dkeSite.png",
+      "externalLink": "https://www.dkenu.com"
+    },
+    {
+      "id": "8",
       "title": "Three Trios Card Game",
       "subtitle": "Multiplayer Card Game with AI Opponents and Swappable UI",
       "categories": ["Java", "Object Oriented Design", "MVC Pattern", "AI"],
@@ -83,7 +91,7 @@
       "externalLink": "https://github.com/chpy04/ThreeTriosCardGame/tree/main?tab=readme-ov-file#three-trios-card-game"
     },
     {
-      "id": "8",
+      "id": "9",
       "title": "Weight A Minute -- Fitness Tracker",
       "subtitle": "Fitness Tracker Connecting Trainers and Users Providing Workouts Based on User's Gym Equipment",
       "categories": ["SQL", "Database Design", "Python"],
@@ -91,7 +99,7 @@
       "externalLink": "https://github.com/dreifusjack/Weight-A-Minute?tab=readme-ov-file#weight-a-minute--spring2025-cs3200-project"
     },
     {
-      "id": "9",
+      "id": "10",
       "title": "Rush Hour Game",
       "subtitle": "Classic Puzzle Game with Reversable Moves, Customizable Levels, and Swappable Rulesets",
       "categories": ["Java", "Object Oriented Design", "Game Development"],
@@ -99,5 +107,5 @@
       "externalLink": "https://github.com/chpy04/rush-hour?tab=readme-ov-file#rush-hour-game"
     }
   ],
-  "aboutpara": "I'm a third-year student studying computer science and mathematics at Northeastern University, with plans to graduate in spring 2027. On top of my studies, I am currently working as the head of web development at Northeastern Electric Racing, and am the lead developer for the Adopt A Character program at The Unicode Consortium. Additionally, I am a teaching assistant for the accel section of Fundamentals of Computer Science 2 and the treasurer for the Alpine Ski Team. My main technical interests include database design, backend web development, machine learning, and object-oriented design. Non-technically, you will find me on the slopes of ski mountains, hiking through the woods, or in an obscure coffee shop in Boston!"
+  "aboutpara": "I'm a third-year student studying computer science with a mathematics minor at Northeastern University, with plans to graduate in spring 2027. I recently completed a Co-op at NExT Consulting building a WMS for Via Separations, and I am currently working as the head of web development at Northeastern Electric Racing where I lead the development of Finishline, our custom ERP solution. Additionally, I am a regular volunteer at The Unicode Consortium, writing code for their Adopt A Character program, and am the treasurer for the Alpine Ski Team. Currently, I am learning C and FreeRTOS to contribute to the embedded codebase at NER. I am always looking for ways to write software that solves real problems, whether that be warehouse management at a biotech company or bib detection for ski racing photographers. Non-technically, you will find me on the slopes of ski mountains, hiking through the woods, or in an obscure coffee shop in Boston!"
 }
