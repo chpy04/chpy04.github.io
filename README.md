@@ -31,8 +31,10 @@ the bottom-left corner, on by default for the owner:
 
 - **Double-click any text** to edit it in place. Enter saves, Escape
   abandons, clicking away saves.
-- **Dates, links and image paths** are not text on the page, so they get a
+- **Dates, links and image URLs** are not text on the page, so they get a
   strip of inputs under the item they belong to.
+- **Drop an image on an image** to replace it — or click it to pick a file.
+  PNG, JPEG, GIF, WebP and AVIF, up to 50 MB.
 - **Add** a project, social link, category chip or timeline entry with the
   dashed `+` buttons.
 - **Archive** instead of deleting. Nothing is ever removed; "Show archived"
@@ -40,8 +42,10 @@ the bottom-left corner, on by default for the owner:
 - **Turn editing off** to browse your own site normally — while it is on,
   project cards are not links, which is what makes their titles clickable.
 
-Images are files under `public/`; the database stores the path. Adding a new
-image means adding a file (D-018).
+Images are objects in a Supabase Storage bucket; the database stores their
+URLs (D-024). Uploading needs `SUPABASE_URL` and
+`SUPABASE_SERVICE_ROLE_KEY`; without them the page still renders every
+image and only the upload answers `503`.
 
 ## Where things are
 
@@ -53,6 +57,7 @@ image means adding a file (D-018).
 | `components/portfolio/`       | the page itself                                                  |
 | `lib/queries/`                | the only modules that touch the database                         |
 | `lib/timeline.ts`             | the date-proportional axis, as pure functions                    |
+| `lib/storage/`                | the media bucket — what may be uploaded, and where it lands      |
 | `scripts/seed-data/`          | the content the site ships with                                  |
 | `docs/`                       | contracts (`SCHEMA.md`, `API.md`) and reasoning (`DECISIONS.md`) |
 

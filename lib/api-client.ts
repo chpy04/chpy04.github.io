@@ -231,6 +231,48 @@ export async function archiveTimelineEntry(id: string): Promise<TimelineEntry> {
 }
 
 // ---------------------------------------------------------------------------
+// Uploads
+// ---------------------------------------------------------------------------
+
+interface SignedUpload {
+  uploadUrl: string;
+  publicUrl: string;
+  path: string;
+}
+
+/**
+ * Puts a file in the media bucket and returns the URL to store on the row.
+ *
+ * Two requests, not one. `POST /api/uploads` only *names* the object and
+ * signs a URL for it; the bytes then go from this browser straight to
+ * Supabase, never through the app (D-025). That is what lets a 20 MB GIF
+ * through a host whose request bodies stop at 4.5 MB — and it keeps the
+ * service-role key on the server, since the signature is scoped to one
+ * object key and expires.
+ *
+ * The PUT is the one deliberate bare `fetch` in this module: `authedFetch`
+ * would attach our session token to a third-party origin, and a 401 from
+ * Supabase is not our session expiring.
+ */
+export async function uploadMedia(file: File): Promise<string> {
+  const signed = await requestJson<SignedUpload>(
+    '/api/uploads',
+    jsonBody('POST', { filename: file.name, contentType: file.type, bytes: file.size }),
+  );
+
+  const response = await fetch(signed.uploadUrl, {
+    method: 'PUT',
+    headers: { 'content-type': file.type },
+    body: file,
+  });
+  if (!response.ok) {
+    throw new ApiError(response.status, `The file could not be stored (${response.status}).`);
+  }
+
+  return signed.publicUrl;
+}
+
+// ---------------------------------------------------------------------------
 // Feedback
 // ---------------------------------------------------------------------------
 

@@ -6,7 +6,7 @@
     "start": "2024-05-01",
     "end": "2024-09-01",
     "type": "employment",
-    "thumbnail": "unicode.png",
+    "thumbnail": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/timeline/unicode.png",
     "timeline-id": 0
   },
   {
@@ -16,7 +16,7 @@
     "start": "2025-01-01",
     "end": "2025-06-01",
     "type": "extracurricular",
-    "thumbnail": "ner.png",
+    "thumbnail": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/timeline/ner.png",
     "timeline-id": 1
   },
   {
@@ -26,7 +26,7 @@
     "start": "2022-08-01",
     "end": "2023-09-01",
     "type": "employment",
-    "thumbnail": "unicode.png",
+    "thumbnail": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/timeline/unicode.png",
     "timeline-id": 2
   },
   {
@@ -36,7 +36,7 @@
     "start": "2023-05-02",
     "end": "2023-09-01",
     "type": "employment",
-    "thumbnail": "ketcha.png",
+    "thumbnail": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/timeline/ketcha.png",
     "timeline-id": 3
   },
   {
@@ -45,7 +45,7 @@
     "description": "In september of 2023 I began my journey at northeastern, which will take 5 years and 3 co-ops.",
     "start": "2023-09-01",
     "type": "education",
-    "thumbnail": "nu.png",
+    "thumbnail": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/timeline/nu.png",
     "timeline-id": 4
   },
   {
@@ -54,7 +54,7 @@
     "description": "After 4 acl tears in my left knee, I decided to move to an advisory role on the club ski team, where I use my skiing, organizational, and photgraphy skills to continue helping the team.",
     "start": "2025-01-01",
     "type": "extracurricular",
-    "thumbnail": "nuski.png",
+    "thumbnail": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/timeline/nuski.png",
     "timeline-id": 5
   },
   {
@@ -64,7 +64,7 @@
     "start": "2024-09-01",
     "end": "2024-12-01",
     "type": "employment",
-    "thumbnail": "koury.png",
+    "thumbnail": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/timeline/koury.png",
     "timeline-id": 6
   },
   {
@@ -74,7 +74,7 @@
     "start": "2025-01-01",
     "end": "2025-04-01",
     "type": "employment",
-    "thumbnail": "koury.png",
+    "thumbnail": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/timeline/koury.png",
     "timeline-id": 7
   },
   {
@@ -84,7 +84,7 @@
     "start": "2023-05-01",
     "end": "2023-05-01",
     "type": "education",
-    "thumbnail": "gould.png",
+    "thumbnail": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/timeline/gould.png",
     "timeline-id": 8
   },
   {
@@ -94,7 +94,7 @@
     "start": "2024-01-01",
     "end": "2024-01-01",
     "type": "extracurricular",
-    "thumbnail": "ner.png",
+    "thumbnail": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/timeline/ner.png",
     "timeline-id": 9
   },
   {
@@ -104,7 +104,7 @@
     "start": "2024-05-01",
     "end": "2024-08-01",
     "type": "employment",
-    "thumbnail": "codewiz.png",
+    "thumbnail": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/timeline/codewiz.png",
     "timeline-id": 10
   },
   {
@@ -114,7 +114,7 @@
     "start": "2022-09-01",
     "end": "2022-09-01",
     "type": "extracurricular",
-    "thumbnail": "csclub.png",
+    "thumbnail": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/timeline/csclub.png",
     "timeline-id": 11
   },
   {
@@ -124,7 +124,7 @@
     "start": "2023-04-01",
     "end": "2023-04-01",
     "type": "award",
-    "thumbnail": "camden.png",
+    "thumbnail": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/timeline/camden.png",
     "timeline-id": 12
   },
   {
@@ -133,7 +133,7 @@
     "description": "After working as a tech lead for a year, I was promoted to the head of web development, where I manage all development and technical operation of our custom project management site. I lead a team of 8 tech leads and 60+ developers to produce new features every semester!",
     "start": "2025-09-01",
     "type": "extracurricular",
-    "thumbnail": "ner.png",
+    "thumbnail": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/timeline/ner.png",
     "timeline-id": 13
   },
   {
@@ -142,7 +142,7 @@
     "description": "I have been alpine ski racing since I was 6 years old, with my journey peaking in high school where I competed at the international level with sub 90 FIS points in slalom and giant slalom",
     "start": "2010-09-01",
     "type": "extracurricular",
-    "thumbnail": "skier.JPEG",
+    "thumbnail": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/timeline/skier.JPEG",
     "timeline-id": 14
   },
   {
@@ -152,7 +152,7 @@
     "start": "2025-06-23",
     "end": "2025-12-17",
     "type": "employment",
-    "thumbnail": "via.jpeg",
+    "thumbnail": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/timeline/via.jpeg",
     "timeline-id": 15
   }
 ]

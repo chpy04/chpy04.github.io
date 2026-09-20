@@ -16,6 +16,9 @@ export default tseslint.config(
   {
     ignores: [
       '.next/**',
+      // Gitignored build output, like `.next/` — and, unlike it, left behind
+      // on any machine that ever ran the static export this app replaced.
+      'out/**',
       'node_modules/**',
       'drizzle/**',
       'public/**',

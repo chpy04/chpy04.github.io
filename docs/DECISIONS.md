@@ -277,6 +277,12 @@ the two anchors in the source data on the way in.
 
 ## D-018 — Images stay files; the database stores paths
 
+> **Superseded by D-024.** Images are objects in a Supabase Storage bucket
+> and the columns below hold their URLs. The reasoning here is kept because
+> it is what D-024 had to answer: the cost it names — a bucket, a signing
+> flow, a size and type policy, a broken-link story — is real, and D-024 and
+> D-025 are where each of those was paid.
+
 `headshot_path`, `image_path`, `thumbnail_path` and the two resume paths
 are strings pointing into `public/`. Nothing in the app uploads an image.
 
@@ -391,3 +397,66 @@ decomposition, a human approves it, and only then does a second `/plan`
 create the children. Children are live work the moment they exist — a `task`
 child is launched straight at `/implement` by `herd.sh` — so creating them
 before the approval would start code on an unapproved epic.
+
+## D-024 — Images live in Supabase Storage, and the column holds a URL
+
+The five path columns hold an absolute URL into a public Supabase Storage
+bucket (`portfolio-media`), not a path under `public/`. The repository
+carries no content images at all; `scripts/upload-media.ts` is what put the
+existing 50 MB of them in the bucket and rewrote the seed data to match.
+
+This reverses D-018, which was right about the costs and wrong about the
+frequency: "a portfolio whose images change a few times a year" turned out
+to mean every image change was a commit, a push and a deploy, on a site
+whose entire premise is that the owner edits it in place. An edit layer
+where every string is editable and no picture is reads as a bug.
+
+**A URL, not a storage key.** The alternative was storing `seed/x.png` and
+resolving it at render through a helper. That needs the project URL in the
+browser (another public env var), a resolver in every component, and a
+decision about what an unresolvable key renders as. An absolute URL makes
+`<Image src={project.imagePath}>` keep working untouched, lets a pasted
+third-party URL work for free, and leaves `next/image` one allowlisted host
+to know about (`next.config.ts`). The cost is that the rows name one
+Supabase project: moving projects is an `UPDATE ... replace(...)`, which is
+a five-minute job done rarely, against a resolver read on every render.
+
+**Public bucket, no signed reads.** Everything in it is already on a public
+portfolio. Signed read URLs would expire, which is exactly wrong for a URL
+stored in a database row.
+
+**Nothing is ever deleted.** Replacing an image leaves the old object where
+it was, for the same reason content is archived rather than deleted
+(D-003): something may still point at it, and 20 MB of orphaned GIF is
+cheaper than a broken image nobody can explain.
+
+The bucket enforces the same two rules the app does — a 50 MB
+`file_size_limit` and an `allowed_mime_types` list matching
+`lib/storage/media.ts`. Two places enforcing one rule is deliberate: the
+bucket is the one a forged request also hits. No SVG in either: it is a
+script host, and `next/image` will not optimize one anyway.
+
+## D-025 — The browser uploads to Supabase directly, against a signed URL
+
+`POST /api/uploads` carries no bytes. It resolves the caller, builds the
+object key from **their** user id, asks Supabase for a URL that may be
+written once at exactly that key, and returns it; the browser then PUTs the
+file straight to Supabase.
+
+The obvious alternative — multipart to our own route, which then forwards
+the bytes — caps out at the host's request-body limit, 4.5 MB on Vercel.
+The site's own animated GIFs run to 18 MB. An upload feature that refuses
+to re-upload the images already on the page is not the feature.
+
+It also keeps the service-role key server-side: what reaches the browser is
+a token scoped to one object key, with an expiry. And the key is built from
+`requireUserId`'s answer, never from anything the caller sent, so a
+signature is only ever permission to write inside the caller's own prefix —
+the storage equivalent of the `WHERE user_id = …` every query carries
+(D-004).
+
+The cost is two round trips per upload and a second failure mode (the PUT
+can fail on its own), which `lib/api-client.ts` reports as one error. The
+other cost is that an upload cannot be tested without credentials: the
+browser suite's drop test skips where `SUPABASE_SERVICE_ROLE_KEY` is unset,
+and what runs everywhere is the affordance and the client-side refusal.

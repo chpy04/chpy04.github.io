@@ -5,16 +5,19 @@ Vercel for the app and Supabase for Postgres.
 
 ## What has to be true
 
-| variable           | required                  | notes                                                                     |
-| ------------------ | ------------------------- | ------------------------------------------------------------------------- |
-| `DATABASE_URL`     | always                    | Supabase's pooler is fine — the client sets `prepare: false`              |
-| `APP_AUTH_MODE`    | no                        | defaults to `password` in production (D-006)                              |
-| `APP_PASSWORD`     | in `password` mode        | long and random; a missing value rejects every login                      |
-| `AUTH_SECRET`      | in `password` mode        | long and random; rotating it signs the owner out                          |
-| `OWNER_EMAIL`      | once there is >1 user     | which account the shared password logs in as, **and whose site is shown** |
-| `FEEDBACK_ENABLED` | no                        | defaults off on Vercel (D-019); set `true` to opt a preview back in       |
-| `GITHUB_TOKEN`     | only where feedback is on | Issues:write + Contents:write on `GITHUB_REPO`                            |
-| `GITHUB_REPO`      | only where feedback is on | `owner/name`                                                              |
+| variable                    | required                  | notes                                                                     |
+| --------------------------- | ------------------------- | ------------------------------------------------------------------------- |
+| `DATABASE_URL`              | always                    | Supabase's pooler is fine — the client sets `prepare: false`              |
+| `APP_AUTH_MODE`             | no                        | defaults to `password` in production (D-006)                              |
+| `APP_PASSWORD`              | in `password` mode        | long and random; a missing value rejects every login                      |
+| `AUTH_SECRET`               | in `password` mode        | long and random; rotating it signs the owner out                          |
+| `OWNER_EMAIL`               | once there is >1 user     | which account the shared password logs in as, **and whose site is shown** |
+| `FEEDBACK_ENABLED`          | no                        | defaults off on Vercel (D-019); set `true` to opt a preview back in       |
+| `GITHUB_TOKEN`              | only where feedback is on | Issues:write + Contents:write on `GITHUB_REPO`                            |
+| `GITHUB_REPO`               | only where feedback is on | `owner/name`                                                              |
+| `SUPABASE_URL`              | to upload images          | `https://<ref>.supabase.co`; reads work without it, uploads 503           |
+| `SUPABASE_SERVICE_ROLE_KEY` | to upload images          | signs upload URLs; **server-side only**, never `NEXT_PUBLIC_`             |
+| `SUPABASE_STORAGE_BUCKET`   | no                        | defaults to `portfolio-media`                                             |
 
 Everything fails **closed**. A missing `APP_PASSWORD` or `AUTH_SECRET`
 rejects every login and logs why.
@@ -34,6 +37,24 @@ it can stay unset.
    They are idempotent and hand-written, so read them first.
 3. Create the owner and seed the content: `DATABASE_URL=… npm run db:seed`.
    **Not `--force`** — that truncates every table.
+
+### Storage
+
+The images are already there and are not part of a deploy (D-024). What a
+new Supabase project needs:
+
+1. A public bucket — `portfolio-media` unless `SUPABASE_STORAGE_BUCKET`
+   says otherwise — with a 50 MB `file_size_limit` and `allowed_mime_types`
+   matching `lib/storage/media.ts`.
+2. `npm run media:upload`, which uploads anything in the seed data still
+   pointing at `public/` and rewrites the reference. It is idempotent and
+   prints what it did.
+3. Rows already in a database keep the URLs they have. Pointing an existing
+   deployment at a different project is an `update … set image_path =
+replace(image_path, '<old>', '<new>')` per column, not a migration.
+
+`next.config.ts` allowlists `*.supabase.co` for `next/image`; a bucket on
+any other host needs a line there or every image 400s.
 
 Supabase Auth is not used. The `users` table has a `supabase_user_id`
 column waiting for it and `lib/auth-supabase.ts` is the one file to write
@@ -55,5 +76,6 @@ column waiting for it and `lib/auth-supabase.ts` is the one file to write
 
 - Sign in at `/login` with `APP_PASSWORD` to get the edit layer. There is
   no link to it from the page, by design.
-- Images are files under `public/` (D-018), so adding one is a commit and a
-  redeploy. Editing the _path_ to one is not.
+- Images are objects in the media bucket (D-024): dropping a new one on the
+  page is neither a commit nor a redeploy. This needs `SUPABASE_URL` and
+  `SUPABASE_SERVICE_ROLE_KEY` to be set on the deployment, not just locally.

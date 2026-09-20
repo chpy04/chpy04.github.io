@@ -99,7 +99,30 @@ async function main(): Promise<void> {
       publicContent.timeline.every((row) => !row.isArchived),
   );
 
-  // 7. An edit, end to end, against the real database — then put it back,
+  // 7. Every image the page shows is in the bucket. A `/images/...` path is
+  //    a file that used to be in the repository and no longer is (D-024):
+  //    it renders as a broken image, and nothing else in the system notices.
+  const mediaPaths = [
+    content.profile.headshotPath,
+    content.profile.resumeImagePath,
+    content.profile.resumePdfPath,
+    ...content.projects.map((row) => row.imagePath),
+    ...content.timeline.map((row) => row.thumbnailPath),
+  ].filter((path) => path.length > 0);
+  const repoLocal = mediaPaths.filter((path) => path.startsWith('/'));
+  check(
+    'no image points at a file in the repository',
+    repoLocal.length === 0,
+    repoLocal.slice(0, 3).join(', '),
+  );
+
+  // Write-ups are deliberately not checked the same way. Twelve of their
+  // markdown image links have pointed at files that were never in this
+  // repository since long before the move, so the assertion would fail for a
+  // reason that has nothing to do with storage. `npm run media:upload` lists
+  // them every run, which is the right place for it.
+
+  // 8. An edit, end to end, against the real database — then put it back,
   //    because the next run reads this same state.
   const original = content.profile.taglineLead;
   const edited = await updateProfile(owner.id, { taglineLead: 'smoke-test tagline' });

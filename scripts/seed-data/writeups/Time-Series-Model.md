@@ -1,6 +1,6 @@
 # Time Series ML Model to Predict Ecuadorian Store Sales
 
-![image](/images/projects/gradient.png)
+![image](https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/projects/gradient.png)
 
 ## Overview
 
@@ -45,10 +45,10 @@ The most essential part of data cleaning is converting all of the data into nume
 Below are visualizations of these three methods, Ordinal (top), One-Hot (middle), and Target Mean (bottom).
 
 <div style="display: flex; justify-content: space-between;">
-  <img src="/images/projects/ordinal.png" alt="Image 1" style="height: 250px; object-fit: cover; border: 2px solid #000;">
-  <img src="/images/projects/oneHot.png" alt="Image 2" style="height: 250px; object-fit: cover; border: 2px solid #000;">
+  <img src="https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/projects/ordinal.png" alt="Image 1" style="height: 250px; object-fit: cover; border: 2px solid #000;">
+  <img src="https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/projects/oneHot.png" alt="Image 2" style="height: 250px; object-fit: cover; border: 2px solid #000;">
 </div>
-<img src="/images/projects/targetMean.png" alt="Description" width="100%" style="border: 2px solid #000; padding: 5px;">
+<img src="https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/projects/targetMean.png" alt="Description" width="100%" style="border: 2px solid #000; padding: 5px;">
 
 ## Choosing a Model
 
@@ -57,8 +57,8 @@ Below are visualizations of these three methods, Ordinal (top), One-Hot (middle)
 For this problem, we settled on utilizing xgbost to build our model. There are many things that make this model an excellent candidate for any project, but one of the main things that likely set it appart from other methods that we tried was its ability to utilize regression trees and random forests.
 
 <div style="display: flex; justify-content: space-between;">
-  <img src="/images/projects/regressionTree.png" alt="Image 1" style="height: 250px; object-fit: cover; border: 2px solid #000;">
-  <img src="/images/projects/randomForest.png" alt="Image 2" style="height: 250px; object-fit: cover; border: 2px solid #000;">
+  <img src="https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/projects/regressionTree.png" alt="Image 1" style="height: 250px; object-fit: cover; border: 2px solid #000;">
+  <img src="https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/projects/randomForest.png" alt="Image 2" style="height: 250px; object-fit: cover; border: 2px solid #000;">
 </div>
 
 As seen in the first image above, a regression tree is a tree of decisions that can be ran through to reach a conclusion. In the example above, it is used to determine the effectiveness of a drug, which might be an example of how human made decision trees work. However, ML models can also create regression trees, which are particularly powerful when combined with random forests, shown in the second image. Random forsts are a method by which models randomly generate regression trees and modify them to become better and better using gradient decent. There is a lot of advanced math hidden within the model, but the image below provides some surface level insights into this process.
@@ -72,8 +72,8 @@ The last step of using this model is hypertuning. Because the model takes in a n
 So far, the model could be used for any kind of data. But there are many properties of temporal data that can be taken advantage of. For example, we would expect people to shop more on the weekend, or during holidays. To take these factors into consideration, we need to look at trends over time within the data.
 
 <div style="display: flex; justify-content: space-between;">
-  <img src="/images/projects/periodogram.png" alt="Image 1" style="height: 250px; object-fit: cover; border: 2px solid #000;">
-  <img src="/images/projects/seasonal.png" alt="Image 2" style="height: 250px; object-fit: cover; border: 2px solid #000;">
+  <img src="https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/projects/periodogram.png" alt="Image 1" style="height: 250px; object-fit: cover; border: 2px solid #000;">
+  <img src="https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/projects/seasonal.png" alt="Image 2" style="height: 250px; object-fit: cover; border: 2px solid #000;">
 </div>
 
 - In the first image, a periodogram provides valuable data about what time periods the data with. It does this by fitting sin waves with different periods to the data, and graphing how well the sin wave matches the data. As expected, there is a large spike in the weekly period, but there are also other spikes that can be used to increase the accuracy of the model.

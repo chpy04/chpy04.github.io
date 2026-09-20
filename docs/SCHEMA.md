@@ -74,13 +74,14 @@ caller handles "this user has no profile yet".
 | `tagline_role`      | `text` not null |                                       |
 | `tagline_org`       | `text` not null |                                       |
 | `about`             | `text` not null | markdown                              |
-| `headshot_path`     | `text` not null | a path under `public/`                |
-| `resume_image_path` | `text` not null | a path under `public/`                |
-| `resume_pdf_path`   | `text` not null | a path under `public/`                |
+| `headshot_path`     | `text` not null | a URL in the media bucket             |
+| `resume_image_path` | `text` not null | a URL in the media bucket             |
+| `resume_pdf_path`   | `text` not null | a URL in the media bucket             |
 
-The three paths point into `public/`. Images are files, not rows: nothing
-in the app uploads one, and the admin layer edits the path rather than the
-bytes (D-018).
+The three are absolute URLs into the `portfolio-media` Supabase Storage
+bucket (D-024). Images are objects, not rows: the column holds where the
+file is, the edit layer uploads the bytes there and writes the URL back,
+and nothing is ever deleted from the bucket.
 
 ## `social_link`
 
@@ -101,7 +102,7 @@ bytes (D-018).
 | `user_id`      | `uuid` not null    | → `users.id`, `on delete restrict`           |
 | `title`        | `text` not null    |                                              |
 | `subtitle`     | `text` not null    |                                              |
-| `image_path`   | `text` not null    | a path under `public/`                       |
+| `image_path`   | `text` not null    | a URL in the media bucket                    |
 | `external_url` | `text`             | **nullable**; null means "open the write-up" |
 | `writeup`      | `text` not null    | markdown; `''` means the card opens nothing  |
 | `sort_order`   | `integer` not null | position in the grid                         |
@@ -135,7 +136,7 @@ category rather than trusting the id it was handed.
 | `starts_on`      | `date` not null    | a calendar date, not an instant           |
 | `ends_on`        | `date`             | **nullable**; null means "to the present" |
 | `kind`           | `text` not null    | `ck_timeline_entry_kind`, four values     |
-| `thumbnail_path` | `text` not null    | a path under `public/`                    |
+| `thumbnail_path` | `text` not null    | a URL in the media bucket                 |
 | `is_archived`    | `boolean` not null |                                           |
 
 **No `sort_order`.** This list is ordered by `starts_on`, which is what a

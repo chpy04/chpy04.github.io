@@ -5,6 +5,9 @@
   "headerTaglineTwo": "Chris Pyle",
   "headerTaglineThree": "Student and Software Developer ",
   "headerTaglineFour": "at Northeastern University",
+  "headshot": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/headshot.jpg",
+  "resumeImage": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/resume.png",
+  "resumePdf": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/Chris-Pyle-CV.pdf",
   "socials": [
     {
       "id": "1",
@@ -32,7 +35,7 @@
         "Machine Learning",
         "YOLO"
       ],
-      "imageSrc": "/images/projects/skiing.png",
+      "imageSrc": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/projects/skiing.png",
       "externalLink": "https://github.com/chpy04/SkiRacingImageProcessing#ski-racing-image-processor"
     },
     {
@@ -44,7 +47,7 @@
         "Typescript",
         "Prisma"
       ],
-      "imageSrc": "/images/projects/partReviewCropped.gif",
+      "imageSrc": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/projects/partReviewCropped.gif",
       "externalLink": "https://github.com/Northeastern-Electric-Racing/FinishLine?tab=readme-ov-file#finishline-by-ner"
     },
     {
@@ -57,7 +60,7 @@
         "Algorithms",
         "Websockets"
       ],
-      "imageSrc": "/images/projects/chess.gif",
+      "imageSrc": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/projects/chess.gif",
       "externalLink": "https://github.com/chpy04/chess?tab=readme-ov-file#bitboard-chess-engine"
     },
     {
@@ -70,7 +73,7 @@
         "Algorithms",
         "Deques"
       ],
-      "imageSrc": "/images/projects/squeeze.gif",
+      "imageSrc": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/projects/squeeze.gif",
       "externalLink": "https://github.com/chpy04/SeamCarver?tab=readme-ov-file#image-compressor-with-seam-carving-algorithm"
     },
     {
@@ -82,7 +85,7 @@
         "Machine Learning",
         "Data Analysis"
       ],
-      "imageSrc": "/images/projects/gradient.png",
+      "imageSrc": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/projects/gradient.png",
       "fileName": "Time-Series-Model.md"
     },
     {
@@ -94,7 +97,7 @@
         "Algorithms",
         "Data Structures"
       ],
-      "imageSrc": "/images/projects/maze.gif",
+      "imageSrc": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/projects/maze.gif",
       "externalLink": "https://github.com/chpy04/maze-solver?tab=readme-ov-file#maze-generator-and-solver"
     },
     {
@@ -106,7 +109,7 @@
         "Machine Learning",
         "Mathematics"
       ],
-      "imageSrc": "/images/projects/numbers.png",
+      "imageSrc": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/projects/numbers.png",
       "fileName": "Convolutional-Neural-Network.md"
     },
     {
@@ -118,7 +121,7 @@
         "React",
         "TailwindCSS"
       ],
-      "imageSrc": "/images/projects/dkeSite.png",
+      "imageSrc": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/projects/dkeSite.png",
       "externalLink": "https://www.dkenu.com"
     },
     {
@@ -131,7 +134,7 @@
         "MVC Pattern",
         "AI"
       ],
-      "imageSrc": "/images/projects/threeTrios.gif",
+      "imageSrc": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/projects/threeTrios.gif",
       "externalLink": "https://github.com/chpy04/ThreeTriosCardGame/tree/main?tab=readme-ov-file#three-trios-card-game"
     },
     {
@@ -143,7 +146,7 @@
         "Database Design",
         "Python"
       ],
-      "imageSrc": "/images/projects/weightAMinute.jpeg",
+      "imageSrc": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/projects/weightAMinute.jpeg",
       "externalLink": "https://github.com/dreifusjack/Weight-A-Minute?tab=readme-ov-file#weight-a-minute--spring2025-cs3200-project"
     },
     {
@@ -155,7 +158,7 @@
         "Object Oriented Design",
         "Game Development"
       ],
-      "imageSrc": "/images/projects/RH.gif",
+      "imageSrc": "https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/projects/RH.gif",
       "externalLink": "https://github.com/chpy04/rush-hour?tab=readme-ov-file#rush-hour-game"
     }
   ],

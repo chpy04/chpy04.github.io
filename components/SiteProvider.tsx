@@ -23,12 +23,14 @@ import {
   reorderProjects,
   updateSocial,
   updateTimelineEntry,
+  uploadMedia as uploadMediaFile,
   type ProfilePatch,
   type ProjectPatch,
   type TimelinePatch,
 } from '@/lib/api-client';
 import { AUTH_EXPIRED_EVENT } from '@/lib/auth-client';
 import { moveTo, nudge } from '@/lib/reorder';
+import { chooseUpload } from '@/lib/storage/media';
 import type { Project, SiteContent, SocialLink, TimelineEntry } from '@/lib/types';
 
 /**
@@ -63,6 +65,18 @@ interface SiteContextValue {
   /** The last failed save. Surfaced once, by the toolbar. */
   error: string | null;
   dismissError: () => void;
+
+  /**
+   * Takes the first of `files` that `accept` allows, puts it in the media
+   * bucket, and resolves to the URL to store on whichever row asked — or to
+   * `null`, with the reason already on screen.
+   *
+   * The caller saves that URL into its own field, because only it knows
+   * whether the file is a headshot or a project image. It lives here rather
+   * than in the drop zone so that a refused file and a refused save report
+   * themselves in the same one place.
+   */
+  uploadMedia: (files: readonly File[], accept: readonly string[]) => Promise<string | null>;
 
   saveProfile: (patch: ProfilePatch) => void;
   addSocial: () => void;
@@ -158,6 +172,30 @@ export default function SiteProvider({ initialContent, children }: SiteProviderP
     window.localStorage.setItem(EDITING_KEY, String(on));
   }, []);
 
+  const editing = canEdit && editingPreference;
+
+  /**
+   * A file dropped anywhere other than an upload zone would otherwise be
+   * opened by the browser, which navigates the tab away from the page and
+   * takes any half-finished edit with it. Cheap to swallow, and only while
+   * the edit layer is on — a reader dropping a file on the page should get
+   * the browser's ordinary behaviour.
+   */
+  useEffect(() => {
+    if (!editing) return;
+
+    function swallow(event: DragEvent): void {
+      event.preventDefault();
+    }
+
+    window.addEventListener('dragover', swallow);
+    window.addEventListener('drop', swallow);
+    return () => {
+      window.removeEventListener('dragover', swallow);
+      window.removeEventListener('drop', swallow);
+    };
+  }, [editing]);
+
   /**
    * Runs one save. Every mutator below goes through this so the error
    * handling is written once: `ApiError` carries the server's own message,
@@ -241,12 +279,28 @@ export default function SiteProvider({ initialContent, children }: SiteProviderP
     return {
       content,
       canEdit,
-      editing: canEdit && editingPreference,
+      editing,
       setEditing,
       showArchived,
       setShowArchived,
       error,
       dismissError: () => setError(null),
+
+      uploadMedia: async (files, accept) => {
+        const { file, error: refused } = chooseUpload(files, accept);
+        if (!file) {
+          setError(refused);
+          return null;
+        }
+        try {
+          const url = await uploadMediaFile(file);
+          setError(null);
+          return url;
+        } catch (err) {
+          setError(err instanceof ApiError ? err.message : 'Could not upload that file.');
+          return null;
+        }
+      },
 
       saveProfile: (patch) =>
         void save(
@@ -329,7 +383,7 @@ export default function SiteProvider({ initialContent, children }: SiteProviderP
       saveTimelineEntry: (id, patch) =>
         void save(() => updateTimelineEntry(id, patch), replaceEntry, 'Could not save that entry.'),
     };
-  }, [content, canEdit, editingPreference, setEditing, showArchived, error, save]);
+  }, [content, canEdit, editing, setEditing, showArchived, error, save]);
 
   return <SiteContext value={value}>{children}</SiteContext>;
 }

@@ -31,8 +31,8 @@ The two exceptions are `POST /api/auth`, which mints the token, and
 | `400`  | bad body, or a value the database's check constraints rejected            |
 | `401`  | no resolvable session                                                     |
 | `404`  | no such row — **or somebody else's row**, which must be indistinguishable |
-| `502`  | GitHub refused a feedback report                                          |
-| `503`  | a feedback report could not be stored anywhere                            |
+| `502`  | an upstream refused — GitHub a feedback report, Supabase an upload        |
+| `503`  | not configured on this deployment — feedback's sinks, or file storage     |
 | `500`  | anything else; logged server-side, generic body                           |
 
 A 403 is never returned for content. It would confirm the id exists.
@@ -175,6 +175,46 @@ would inflate it ~33% against the 4.5 MB request-body ceiling.
 enabled.ts`) — the route is closed, not just the button hidden. With no
 `GITHUB_TOKEN`/`GITHUB_REPO` configured the report is written to
 `feedback/` rather than refused, which is what `target: "local"` reports.
+
+## Uploads
+
+### `POST /api/uploads`
+
+Signs one upload into the media bucket. **It does not carry the file.**
+
+```json
+{ "filename": "headshot.jpg", "contentType": "image/jpeg", "bytes": 84213 }
+```
+
+```json
+{
+  "uploadUrl": "https://<ref>.supabase.co/storage/v1/object/upload/sign/portfolio-media/u/<userId>/…?token=…",
+  "publicUrl": "https://<ref>.supabase.co/storage/v1/object/public/portfolio-media/u/<userId>/…",
+  "path": "u/<userId>/2026/09/…-headshot.jpg"
+}
+```
+
+The caller then `PUT`s the file to `uploadUrl` and `PATCH`es `publicUrl`
+into whichever field it belongs to (`headshotPath`, `imagePath`,
+`thumbnailPath`, `resumeImagePath`, `resumePdfPath`). `lib/api-client.ts`
+does both halves as `uploadMedia()`.
+
+The bytes never pass through this app, which is what lets a 20 MB GIF
+through a host that stops request bodies at 4.5 MB (D-025). `bytes` and
+`contentType` are therefore a _claim_: they buy the caller a good error
+before a long upload, while the bucket's own `file_size_limit` and
+`allowed_mime_types` are what actually hold.
+
+`contentType` must be one of `image/png`, `image/jpeg`, `image/gif`,
+`image/webp`, `image/avif`, `application/pdf` — no SVG (D-024). The object
+key is built from the session's user id and is **not** the caller's to
+choose.
+
+`503` means this deployment has no `SUPABASE_URL` /
+`SUPABASE_SERVICE_ROLE_KEY`; `502` means Supabase refused to sign.
+
+There is no `DELETE`. Replacing an image leaves the old object in the
+bucket (D-024), the same way replacing content archives rather than deletes.
 
 ## Adding an endpoint
 

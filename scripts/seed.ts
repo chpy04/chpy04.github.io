@@ -74,6 +74,11 @@ interface SourcePortfolio {
   headerTaglineThree: string;
   headerTaglineFour: string;
   aboutpara: string;
+  /** Absolute URLs into the media bucket, like every other image the seed
+   *  carries — see `scripts/upload-media.ts`. */
+  headshot: string;
+  resumeImage: string;
+  resumePdf: string;
   socials: { title: string; link: string }[];
   projects: {
     title: string;
@@ -92,6 +97,8 @@ interface SourceTimelineEntry {
   start: string;
   end?: string;
   type: string;
+  /** An absolute URL, not a filename: the media moved to Supabase Storage
+   *  (D-024) and `scripts/upload-media.ts` rewrote these in place. */
   thumbnail: string;
 }
 
@@ -150,9 +157,9 @@ async function main(): Promise<void> {
     taglineRole: source.headerTaglineThree.trim(),
     taglineOrg: source.headerTaglineFour,
     about: source.aboutpara,
-    headshotPath: '/images/headshot.jpg',
-    resumeImagePath: '/images/resume.png',
-    resumePdfPath: '/Chris-Pyle-CV.pdf',
+    headshotPath: source.headshot,
+    resumeImagePath: source.resumeImage,
+    resumePdfPath: source.resumePdf,
   });
   console.log('Seeded the site profile.');
 
@@ -215,7 +222,7 @@ async function main(): Promise<void> {
       startsOn: entry.start,
       endsOn: entry.end ?? null,
       kind: entry.type as TimelineKind,
-      thumbnailPath: `/images/timeline/${entry.thumbnail}`,
+      thumbnailPath: entry.thumbnail,
       createdAt: new Date(base + index),
     });
   }
