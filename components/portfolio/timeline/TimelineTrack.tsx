@@ -206,7 +206,10 @@ export default function TimelineTrack({ entries }: TimelineTrackProps) {
           replays the entrance animation. */}
       <div
         role="tabpanel"
-        className="relative flex min-h-[220px] items-center justify-center gap-2 tablet:gap-4"
+        // `items-start`, not `items-center`: `min-h` is taller than a short
+        // card, and centring one inside it floats its top edge away from the
+        // leader line that is supposed to meet it.
+        className="relative flex min-h-[220px] items-start justify-center gap-2 tablet:gap-4"
       >
         <StepButton direction={-1} disabled={selectedIndex === 0} onClick={() => move(-1, false)} />
         <div key={active.id} className="min-w-0 max-w-3xl flex-1 motion-safe:animate-fade-up">
@@ -241,7 +244,7 @@ function StepButton({ direction, disabled, onClick }: StepButtonProps) {
       onClick={onClick}
       disabled={disabled}
       aria-label={direction === -1 ? 'Show previous timeline entry' : 'Show next timeline entry'}
-      className="shrink-0 rounded-full border border-line p-2 text-ink-dim transition-colors enabled:hover:border-line-hover enabled:hover:bg-surface enabled:hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-ink/70 disabled:cursor-not-allowed disabled:opacity-25"
+      className="shrink-0 self-center rounded-full border border-line p-2 text-ink-dim transition-colors enabled:hover:border-line-hover enabled:hover:bg-surface enabled:hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-ink/70 disabled:cursor-not-allowed disabled:opacity-25"
     >
       <svg
         className="h-5 w-5"
