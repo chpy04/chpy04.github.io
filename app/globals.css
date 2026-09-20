@@ -1,0 +1,306 @@
+@import 'tailwindcss';
+@plugin "@tailwindcss/typography";
+
+/*
+ * The whole design system. Every colour, breakpoint and font in the app comes
+ * from a token here via a generated utility (`text-ink-dim`, `bg-surface`,
+ * `tablet:flex`) — see .claude/rules/styling.md. Raw palette shades
+ * (`text-slate-300`) and arbitrary values (`text-[var(--color-ink)]`) are
+ * both out.
+ */
+@theme {
+  /* -------------------------------------------------------------------------
+   * Breakpoints. `initial` drops Tailwind's sm/md/lg/xl/2xl entirely rather
+   * than sitting alongside them: two overlapping sets is how you end up with
+   * `md:` and `tablet:` disagreeing by 8px in the same file.
+   * ---------------------------------------------------------------------- */
+  --breakpoint-*: initial;
+  --breakpoint-mob: 375px;
+  --breakpoint-tablet: 768px;
+  --breakpoint-laptop: 1024px;
+  --breakpoint-desktop: 1280px;
+  --breakpoint-laptopl: 1440px;
+
+  /* `--font-hind` is set by next/font in app/layout.tsx; the fallbacks are
+   * what renders during the swap. */
+  --font-sans: var(--font-hind), ui-sans-serif, system-ui, sans-serif;
+
+  /* -------------------------------------------------------------------------
+   * Surfaces and text. Named for depth and emphasis, not colour, so a theme
+   * change is one edit here.
+   * ---------------------------------------------------------------------- */
+  --color-canvas: #000000;
+  --color-surface: #1e293b;
+  --color-surface-2: #334155;
+  --color-surface-deep: #0f172a;
+
+  --color-line: #334155;
+  --color-line-strong: #475569;
+  --color-line-soft: #374151;
+  --color-line-hover: #6b7280;
+
+  --color-ink: #ffffff;
+  /* Three levels of near-white, because the design genuinely uses three:
+   * pure white for the hero, `bright` for card headings, `soft` for body
+   * copy that should sit back from them. */
+  --color-ink-bright: #f3f4f6;
+  --color-ink-soft: #e5e7eb;
+  --color-ink-dim: #d1d5db;
+  --color-ink-faint: #9ca3af;
+  --color-ink-fainter: #6b7280;
+  --color-ink-faintest: #4b5563;
+
+  --color-accent: #60a5fa;
+  --color-accent-soft: #93c5fd;
+
+  /* The category chips on a project card. */
+  --color-tag: #3b82f6;
+  --color-tag-ink: #93c5fd;
+
+  /* -------------------------------------------------------------------------
+   * Timeline entry kinds. One hue per kind, plus the lighter `-ink` used for
+   * badge text on a tinted background. These four are also the only place
+   * the UI depends on `timeline_entry.kind`, which is why that column has a
+   * check constraint: a fifth value would render grey with nothing in the
+   * data to say it was a typo.
+   * ---------------------------------------------------------------------- */
+  --color-kind-employment: #60a5fa;
+  --color-kind-employment-ink: #bfdbfe;
+  --color-kind-education: #34d399;
+  --color-kind-education-ink: #a7f3d0;
+  --color-kind-extracurricular: #e879f9;
+  --color-kind-extracurricular-ink: #f5d0fe;
+  --color-kind-award: #fbbf24;
+  --color-kind-award-ink: #fde68a;
+  --color-kind-other: #94a3b8;
+  --color-kind-other-ink: #e2e8f0;
+
+  /* The two colours every glow on the page is mixed from. */
+  --color-glow-pink: #f86bdf;
+  --color-glow-indigo: #6b6bf8;
+
+  /* -------------------------------------------------------------------------
+   * The admin layer. Deliberately a hue used nowhere else on the page: an
+   * edit affordance has to read as "not part of the design" at a glance, or
+   * you cannot tell a dashed underline from a styled one.
+   * ---------------------------------------------------------------------- */
+  --color-edit: #2dd4bf;
+  --color-edit-ink: #99f6e4;
+  --color-edit-surface: #042f2e;
+
+  /* -------------------------------------------------------------------------
+   * Motion. Three named animations, so a component writes `animate-fade-up`
+   * rather than an arbitrary value — and so the durations are comparable in
+   * one place instead of scattered across five files.
+   * ---------------------------------------------------------------------- */
+  --animate-menu-in: menu-in 150ms ease-out;
+  --animate-fade-up: fade-up 180ms ease-out;
+  --animate-rise-in: rise-in 800ms cubic-bezier(0.215, 0.61, 0.355, 1) both;
+
+  @keyframes menu-in {
+    from {
+      opacity: 0;
+      transform: translateY(-0.5rem);
+    }
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(0.5rem);
+    }
+  }
+
+  @keyframes rise-in {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+  }
+
+  /* -------------------------------------------------------------------------
+   * Status. These alias Tailwind's own scale rather than hardcoding hex, so
+   * they track the framework's colour space instead of drifting from it.
+   * ---------------------------------------------------------------------- */
+  --color-danger: var(--color-red-400);
+  --color-danger-ink: var(--color-red-300);
+  --color-danger-ink-strong: var(--color-red-200);
+  --color-danger-surface: var(--color-red-950);
+  --color-danger-line: var(--color-red-900);
+  --color-danger-line-strong: var(--color-red-800);
+
+  --color-success: var(--color-green-500);
+
+  /* Something worked but not entirely — e.g. the feedback report that filed
+   * while its screenshot upload failed. Distinct from `danger`: nothing was
+   * lost. Mirrors the danger triplet so the two banners read as one system. */
+  --color-warning: var(--color-amber-400);
+  --color-warning-ink: var(--color-amber-300);
+  --color-warning-surface: var(--color-amber-950);
+  --color-warning-line: var(--color-amber-800);
+  --color-warning-line-strong: var(--color-amber-700);
+}
+
+html {
+  width: 100%;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  /* Fixed header clearance for in-page anchor links. */
+  scroll-padding-top: 5rem;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  width: 100%;
+  overflow-x: hidden;
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/*
+ * The two page glows. Both are decorative, both are pointer-events:none, and
+ * both are plain CSS rather than utilities because a four-stop layered
+ * radial gradient in a `className` is unreadable.
+ */
+.gradient-circle {
+  position: absolute;
+  pointer-events: none;
+  z-index: 100;
+  top: -30px;
+  height: 40px;
+  width: 100%;
+  opacity: 0.5;
+  filter: blur(40px);
+  background: radial-gradient(
+    circle,
+    rgb(from var(--color-glow-pink) r g b / 1) 0%,
+    rgb(from var(--color-glow-indigo) r g b / 0.8) 100%
+  );
+}
+
+.gradient-circle-middle {
+  position: fixed;
+  pointer-events: none;
+  z-index: -1;
+  inset: 0;
+  opacity: 0.2;
+  filter: blur(80px);
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      rgb(from var(--color-glow-pink) r g b / 0.5) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 30%,
+      rgb(from var(--color-glow-indigo) r g b / 0.5) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 40% 60%,
+      rgb(from var(--color-glow-pink) r g b / 0.5) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 70% 80%,
+      rgb(from var(--color-glow-indigo) r g b / 0.5) 0%,
+      transparent 50%
+    );
+}
+
+/*
+ * An element being edited in place. `contenteditable` gives no styling hook
+ * of its own, and the caret needs somewhere to sit when the field is empty —
+ * `min-width` is what stops a blank tagline collapsing to nothing you can
+ * click back into.
+ */
+[contenteditable='true'] {
+  min-width: 2ch;
+  outline: none;
+  border-radius: 0.25rem;
+  box-shadow:
+    0 0 0 2px var(--color-edit),
+    0 0 0 6px rgb(from var(--color-edit) r g b / 0.15);
+}
+
+/*
+ * The hero's entrance: each child a beat behind the one above it. Five
+ * `nth-child` delays rather than an animation library, and `motion-safe` so
+ * it simply does not run for anyone who asked for less motion.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-stagger > * {
+    animation: var(--animate-rise-in);
+  }
+
+  .hero-stagger > *:nth-child(2) {
+    animation-delay: 200ms;
+  }
+
+  .hero-stagger > *:nth-child(3) {
+    animation-delay: 400ms;
+  }
+
+  .hero-stagger > *:nth-child(4) {
+    animation-delay: 600ms;
+  }
+
+  .hero-stagger > *:nth-child(5) {
+    animation-delay: 800ms;
+  }
+}
+
+/*
+ * The write-up modal is a native <dialog>: the focus trap, Escape-to-close
+ * and inertness of the page behind it are all the platform's, not ours.
+ * Only its backdrop needs styling.
+ */
+dialog::backdrop {
+  background: rgb(0 0 0 / 0.7);
+  backdrop-filter: blur(4px);
+}
+
+/*
+ * Markdown rendered *inside* text that already has a size and a measure —
+ * the about paragraph, a timeline card's description. `prose` sets its own
+ * font-size, line-height and paragraph margins, which is right for a
+ * standalone article and wrong for a paragraph that used to be a plain
+ * <p> and must still line up with one.
+ *
+ * Both the wrapper and its paragraphs opt out: `.prose` sizes the container
+ * as well, so inheriting on the `p` alone just inherits `prose`'s own 1rem.
+ *
+ * `:where()` so this carries no specificity of its own and a utility on the
+ * element can still win.
+ */
+.prose-inherit,
+.prose-inherit :where(p) {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.prose-inherit :where(p) {
+  margin: 0;
+}

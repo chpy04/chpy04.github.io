@@ -1,32 +1,34 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# local env files
+# No trailing slash: in a worktree `node_modules` is a symlink to the main
+# checkout (see CLAUDE.md), and `node_modules/` only matches real directories.
+node_modules
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+.env
 .env*.local
+.DS_Store
+coverage/
+playwright-report/
+test-results/
+.pgdata/
+scripts/.scratch/
 
-# vercel
-.vercel
+# In-app feedback filed with no GITHUB_REPO configured lands here as
+# markdown + screenshots (lib/feedback/local-sink.ts). It is a drop box for
+# whoever is working on the code, not a record worth committing.
+#
+# The leading slash is load-bearing: an unanchored `feedback/` also matches
+# `components/feedback/`, and Tailwind's source detection skips whatever
+# git ignores — so the widget silently loses every utility class it does
+# not share with the rest of the page.
+/feedback/
+/test-results/
+/playwright-report/
+/blob-report/
+
+# Claude Code: rules/ and settings.json are checked in (see .claude/README.md);
+# per-machine overrides and runtime state are not.
+.claude/settings.local.json
+.claude/scheduled_tasks.lock

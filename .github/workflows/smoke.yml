@@ -1,0 +1,28 @@
+# The project's acceptance bar: seed a real Postgres, then read it back
+# through the query layer and assert the app's core promise still holds.
+# See scripts/smoke.ts — replace its assertions when you replace the demo
+# resource, or this is a green check that means nothing.
+#
+# Its own job rather than part of `test` because it fails for a different
+# reason: `test` says the code is wrong, `smoke` says the product is.
+name: smoke
+on:
+  push:
+    branches: [main]
+  pull_request:
+concurrency:
+  group: smoke-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  round-trip:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgres://app:app@localhost:5434/app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-node-deps
+
+      - run: docker compose up -d --wait db
+      - run: npm run db:migrate
+      - run: npm run db:seed -- --force
+      - run: npm run smoke

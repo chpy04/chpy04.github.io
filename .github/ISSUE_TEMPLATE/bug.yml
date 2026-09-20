@@ -1,0 +1,30 @@
+# Mirrors the shape the in-app feedback widget files (lib/feedback/issue.ts),
+# so a hand-written bug and a widget-filed one read the same on the board.
+# Keep the two aligned, or the tracker ends up with two dialects of bug report.
+name: Bug
+description: Something in the app does not behave the way it should
+labels: ['bug']
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happens
+      description: The observed behaviour, and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+  - type: input
+    id: where
+    attributes:
+      label: Where
+      description: Route, or the file if you already know it.
+      placeholder: /items — the archive button
