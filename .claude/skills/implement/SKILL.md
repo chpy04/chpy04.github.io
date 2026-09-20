@@ -152,8 +152,23 @@ existing one after that, so it is safe to run when you are unsure.
 
 One issue = one agent = one worktree = one branch. The script names the
 branch from the issue — `fix/` for a `bug`, `chore/` for a `task`, `feat/`
-for a `feature`, then the number and a slug of the title — and branches from
-`origin/main`, never from local `main`, which may be behind.
+for a `feature`, then the number and a slug of the title.
+
+**A new branch is cut from freshly fetched `origin/main`**, never from local
+`main`, which may be behind. But if that branch already exists — a previous
+run on this issue that died, or one whose worktree was removed — the script
+**resumes it where it is** rather than recreating it, because throwing away
+commits nobody has seen is worse than an old base. So check what you
+inherited before you assume you are starting clean:
+
+```bash
+git log --oneline origin/main..HEAD    # empty on a fresh branch
+```
+
+If it is not empty, that is your own earlier work. Read it, and continue it
+rather than redoing it. If it is stale enough to matter, rebase onto
+`origin/main` before you build — you have not pushed, so nobody is holding a
+reference to it.
 
 **Never `cd` to the main checkout, and never run the gate there.** Two
 `next build` processes in one checkout corrupt `.next`, which surfaces later
