@@ -58,8 +58,9 @@ now a row.
   reorder a whole list and are covered by tests, but nothing in the page
   calls them — there is no drag handle. Order is whatever the seed set.
 - **The agent lifecycle.** `.claude/skills/` and `scripts/herd.sh` are
-  inherited from the template and assume a GitHub repo with `status:*`
-  labels. They will not work until there is one.
+  inherited from the template and assume a GitHub repo whose issues wear
+  both a `status:*` label and a type label (`scripts/status.sh
+init-labels` creates them). They will not work until there is one.
 
 ## Local setup
 

@@ -1,0 +1,22 @@
+# The label this applies is a routing decision: `task` has no plan stage, so
+# an agent picks it up and builds it straight out of the backlog. Pick
+# `feature` instead when you would want to read the approach before any code
+# exists (.claude/rules/github.md).
+name: Task
+description: A small, well-understood change — refactor, dependency bump, docs, tooling, CI. Built without a planning round trip
+labels: ['task']
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What needs doing
+      description: Specific enough to build from. There is no plan stage, so this text is the whole brief.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why now
+      description: Tasks compete with features. What makes this worth doing.
+    validations:
+      required: true

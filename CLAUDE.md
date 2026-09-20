@@ -153,12 +153,10 @@ write-ups — is **markdown**, rendered through
 `rehype-raw` (D-017). If you find yourself reaching for
 `dangerouslySetInnerHTML`, that is the decision to raise, not to make.
 
-## Two ways to work here
+## How the work lands
 
-**In a session with a human.** The default, and almost certainly you. Work
-the way you normally would: understand the request, branch, build it, get
-`npm run verify` green, commit. Approval happens in conversation — "go
-ahead" is the whole gate.
+Understand the request, branch, build it, get `npm run verify` green,
+commit. Approval happens in conversation — "go ahead" is the whole gate.
 
 There is no ceremony to perform. No issue to file, no label to move, no plan
 to post and wait on. If a GitHub issue already exists and the human named
@@ -166,20 +164,6 @@ it, reference it in the commit body; if one does not, **do not create one** —
 the issue list is the human's inbox, and an agent that files its own work
 item has quietly promoted its own idea to a commitment nobody made. Say it
 in your reply instead.
-
-**Unattended, through the skills.** `.claude/skills/` holds three —
-`/triage`, `/implement`, `/review-pr` — that carry a GitHub issue from
-backlog to open PR with nobody watching, and `scripts/herd.sh` starts one
-agent per open issue on the skill its `status:*` label calls for. They are
-deliberately heavy with ceremony, because the only thing that matters when
-no one is watching is an agent that **stops** where a human would otherwise
-have interrupted it (D-011).
-
-**That is not this.** Those rules live in the skill files and in
-`.claude/rules/github.md`, deliberately out of here, so an attended session
-never pays for them in context. Each skill is
-`disable-model-invocation: true` and fires only when something types
-`/triage 12` — never on its own, and never at another skill's request.
 
 ## Branches and worktrees
 

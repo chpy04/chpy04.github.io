@@ -1,33 +1,46 @@
 #!/usr/bin/env bash
 #
-# Open one Claude terminal per open issue, on the skill that issue's status
-# calls for.
+# Open one Claude terminal per open issue, on the skill that issue's type and
+# status call for.
 #
-# This is the unattended path of CLAUDE.md's lifecycle, driven from the
-# outside: the three skills each take exactly one issue and deliberately
+# This is the unattended path of the lifecycle in .claude/rules/github.md,
+# driven from the outside: the three skills each take exactly one issue and deliberately
 # refuse to scan the list, because "what gets worked on" is a human decision.
 # This script *is* that decision, made once and in the open -- it reads every
-# open issue, maps `status:*` to the one skill whose entry conditions that
-# status satisfies, and starts an agent per match.
+# open issue, maps the pair (type, status) to the one skill whose entry
+# conditions that pair satisfies, and starts an agent per match.
 #
 # There is no model in this loop. Every branch below is a label comparison or
 # a timestamp comparison, so two runs against the same tracker state launch
 # the same terminals. If it ever surprises you, `--dry-run` prints the whole
 # decision table without touching Herdr.
 #
-#   status:backlog     -> /triage <n>      no plan exists yet
-#   status:planning    -> /triage <n>      ONLY if feedback postdates the plan
-#   status:ready       -> /implement <n>   a human approved the plan
-#   status:in-review   -> /review-pr <pr>  the open PR that closes it
-#   status:in-progress -> skip             an agent already claimed it
-#   status:blocked     -> skip             waiting on a human decision
+# The route depends on two labels, not one: the *type* says whether the work
+# has a plan stage at all, and the *status* says where on that route it is.
+# Whoever files the issue picks the type, which is the point -- an agent that
+# could set it could route itself around the only gate it has.
+#
+#   backlog  + bug|task  -> /implement <n>   no plan stage; filing it was the go
+#   backlog  + feature   -> /plan <n>        needs a plan and an approval
+#   backlog  + epic      -> /plan <n>        pass one: requirements + children
+#   planning + feat|epic -> /plan <n>        ONLY if feedback postdates the plan
+#   ready    + epic      -> /plan <n>        pass two: create the children
+#   ready    + anything  -> /implement <n>   a human approved the plan
+#   in-review            -> /review-pr <pr>  the open PR that closes it
+#   in-progress          -> skip             an agent already claimed it
+#   blocked              -> skip             waiting on a human decision
 #
 # `planning` is the subtle one. It means a plan is written and sitting at the
 # human approval gate, which is not work an agent can advance -- except in the
-# one case `/triage` names as re-planning, where a human has left feedback and
+# one case `/plan` names as re-planning, where a human has left feedback and
 # somebody has to answer it. So a planning issue launches only when a comment
 # is newer than the last edit to the body the plan lives in. Absent that, the
 # issue is waiting on you and gets no terminal.
+#
+# An epic takes /plan twice, with the approval gate between: its children are
+# live work the moment they exist -- a `task` child is launched straight at
+# /implement by this script -- so they are not created until the epic itself
+# reaches `ready`.
 #
 # Usage:
 #   scripts/herd.sh [--dry-run] [--workspace <id>]
@@ -139,6 +152,10 @@ fetch() {
 #
 # ISO 8601 timestamps are all UTC and fixed-width here, so `>` on the strings
 # is a correct chronological compare and needs no date parsing.
+#
+# "Has a plan" is the *closing* marker, `<!-- /plan -->`. The opening one
+# carries a `planned=` timestamp (`<!-- plan planned=... -->`), so matching on
+# `<!-- plan -->` finds nothing and every planned issue reads as unplanned.
 DECIDE='
   .data.repository as $r
   | ([ $r.pullRequests.nodes[]
@@ -147,27 +164,44 @@ DECIDE='
        | { key: (.number | tostring), value: $p.number } ] | from_entries) as $prOf
   | $r.issues.nodes[]
   | . as $i
-  | ([ .labels.nodes[].name ] | map(select(startswith("status:")))) as $labels
+  | [ .labels.nodes[].name ] as $names
+  | ($names | map(select(startswith("status:")))) as $labels
   | ($labels[0] // "" | ltrimstr("status:")) as $s
-  | (.body | test("<!-- plan -->")) as $planned
+  | ($names | map(select(. == "bug" or . == "task" or . == "feature"))) as $types
+  | (if ($names | any(. == "epic")) then "epic" else ($types[0] // "") end) as $t
+  | (.body | test("<!-- /plan -->")) as $planned
   | (.lastEditedAt // .createdAt) as $bodyAt
   | (.comments.nodes[0].createdAt // "") as $commentAt
   | (if ($labels | length) == 0 then
        ["skip", "-", "-", "no status: label -- scripts/status.sh set \($i.number) backlog"]
      elif ($labels | length) > 1 then
        ["skip", "-", "-", "wears \($labels | join(" + ")) -- scripts/status.sh set \($i.number) <one>"]
+     elif $t == "" then
+       ["skip", "-", "-", "no type label -- add bug, task or feature"]
+     elif ($t != "epic" and ($types | length) > 1) then
+       ["skip", "-", "-", "wears \($types | join(" + ")) -- an issue has one type"]
      elif $s == "backlog" then
-       ["run", "triage", ($i.number | tostring), "unplanned"]
+       (if $t == "bug" or $t == "task" then
+          ["run", "implement", ($i.number | tostring), "\($t), no plan stage"]
+        else
+          ["run", "plan", ($i.number | tostring), "unplanned \($t)"]
+        end)
      elif $s == "planning" then
-       (if ($planned | not) then
-          ["run", "triage", ($i.number | tostring), "status:planning with no plan in the body"]
+       (if $t == "bug" or $t == "task" then
+          ["skip", "-", "-", "a \($t) has no plan stage -- scripts/status.sh set \($i.number) backlog"]
+        elif ($planned | not) then
+          ["run", "plan", ($i.number | tostring), "status:planning with no plan in the body"]
         elif ($commentAt != "" and $commentAt > $bodyAt) then
-          ["run", "triage", ($i.number | tostring), "feedback left since the plan"]
+          ["run", "plan", ($i.number | tostring), "feedback left since the plan"]
         else
           ["skip", "-", "-", "plan written, waiting on your approval"]
         end)
      elif $s == "ready" then
-       ["run", "implement", ($i.number | tostring), "plan approved"]
+       (if $t == "epic" then
+          ["run", "plan", ($i.number | tostring), "epic approved -- create its children"]
+        else
+          ["run", "implement", ($i.number | tostring), "plan approved"]
+        end)
      elif $s == "in-review" then
        ($prOf[$i.number | tostring] as $pr
         | if $pr == null then

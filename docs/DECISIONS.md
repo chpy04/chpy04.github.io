@@ -151,7 +151,7 @@ status label at a time" is enforced in one place.
 
 ## D-011 — Three skills, each invoked by hand, never invoking each other
 
-`/triage`, `/implement`, `/review-pr` each carry one phase, each take
+`/plan`, `/implement`, `/review-pr` each carry one phase, each take
 exactly one issue or PR number, and each is `disable-model-invocation:
 true`.
 
@@ -159,7 +159,15 @@ A phase boundary is a human decision, and three separate invocations is what
 keeps it one. The thing that matters when nobody is watching is an agent
 that **stops** where a human would otherwise have interrupted it — so the
 skills are heavy with ceremony that an attended session never pays for,
-because it lives in the skill files rather than in `CLAUDE.md`.
+because it lives in the skill files rather than in `CLAUDE.md`. `CLAUDE.md`
+does not mention them at all: they are model-invocation-disabled, so an
+attended session cannot reach them and should not be carrying the idea of
+them around.
+
+They also never ask. An unattended run has no one in the pane, so a question
+is the run stopping silently — every open question is written to the issue
+instead, as a **Key decision** in a plan, a line in the PR body, or
+`status:blocked` plus a comment.
 
 `scripts/herd.sh` is the one place that decides what to start, and it
 contains no model: every branch is a label or timestamp comparison.
@@ -343,3 +351,43 @@ untested. The cases that actually break it are all arithmetic: a gap one
 day either side of the compression threshold, a year label falling inside a
 collapsed gap, three entries on the same date. Each is a line in a unit
 test and a twenty-minute investigation in a browser.
+
+## D-023 — The issue's type label decides whether there is a plan stage
+
+This one amends the inherited harness rather than the app, so it also lives
+in `template-web`, where it is D-015. Changing it here means changing it
+there.
+
+Whoever files an issue picks `bug`, `task` or `feature`, and that label is
+the route: a `bug` or a `task` goes straight from `status:backlog` to
+`/implement`, while a `feature` goes to `/plan` and waits at the
+`planning → ready` approval gate before any code. `/implement` therefore
+runs in two modes — from an approved plan, or from nothing but the issue
+text, deciding the approach itself and writing it into the PR body.
+
+Before this, `/triage` ran on every issue and sized it: Track A (small) it
+planned in five lines and **self-approved** straight to `status:ready`,
+Track B it planned properly and left at the gate. That put both the sizing
+and the decision to skip the only gate inside the agent, on a judgement call
+the table in that skill admitted was often close. It also spent a full agent
+run writing a five-line plan for a typo fix.
+
+A human already knows which kind of thing they are filing, at the moment
+they file it, for free. Moving the call to the issue template makes it a
+human's, makes it visible on the list without opening the issue, and leaves
+no way for an agent to route itself around an approval — no skill may write
+a type label, and `/implement` blocks rather than quietly building a `task`
+that turned out to be feature-sized.
+
+The cost is mislabelling: a `task` that should have been a `feature` gets
+built without anyone seeing the approach first. That is bounded by the PR
+review, and by `/implement` blocking when the work outgrows its label.
+Rejected: keeping agent-side sizing but removing the self-approval (an extra
+round trip on every typo), and a fourth `needs-plan` label orthogonal to
+type (two labels saying one thing, and they can disagree).
+
+Epics keep a plan stage and gain a second pass: `/plan` writes the
+decomposition, a human approves it, and only then does a second `/plan`
+create the children. Children are live work the moment they exist — a `task`
+child is launched straight at `/implement` by `herd.sh` — so creating them
+before the approval would start code on an unapproved epic.
