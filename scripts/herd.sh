@@ -42,6 +42,13 @@
 # /implement by this script -- so they are not created until the epic itself
 # reaches `ready`.
 #
+# Agents that write code are started *inside their own worktree*, not in the
+# main checkout: `scripts/worktree.sh` makes it and the tab opens there. That
+# used to be a block of bash in the skill file for the agent to copy, which
+# made "did it work in the main checkout" a question about whether a model
+# followed prose. If the worktree cannot be made, the agent is not started at
+# all -- launching it in the main checkout is the outcome worth avoiding.
+#
 # Usage:
 #   scripts/herd.sh [--dry-run] [--workspace <id>]
 #
@@ -93,6 +100,8 @@ done
 for tool in gh jq herdr; do
   command -v "$tool" >/dev/null 2>&1 || die "$tool is not on PATH"
 done
+
+[ -x "$ROOT/scripts/worktree.sh" ] || die "scripts/worktree.sh is missing or not executable -- it is what keeps agents out of the main checkout"
 
 [ -n "$REPO" ] || die "cannot determine the repo -- is gh authenticated, and does this checkout have an origin remote? (or set APP_REPO=owner/name)"
 
@@ -242,12 +251,25 @@ has_tab() {
   grep -q "^#$1 " <<<"$existing"
 }
 
+# Where the agent is started. /implement and /review-pr write code, commit
+# and run the gate, so each gets a worktree of its own and never has the main
+# checkout as its cwd. /plan only reads the tree -- what it writes goes to the
+# issue through `gh` -- so it runs in the main checkout and leaves it alone.
+workdir_for() {
+  local skill="$1" arg="$2"
+  case "$skill" in
+    implement) "$ROOT/scripts/worktree.sh" issue "$arg" ;;
+    review-pr) "$ROOT/scripts/worktree.sh" pr "$arg" ;;
+    *) echo "$ROOT" ;;
+  esac
+}
+
 launch() {
-  local num="$1" skill="$2" arg="$3" label pane out
+  local num="$1" skill="$2" arg="$3" cwd="$4" label pane out
   label="#$num $skill"
 
   out=$(herdr_api herdr tab create \
-    --workspace "$WORKSPACE" --cwd "$ROOT" --label "$label" --no-focus) ||
+    --workspace "$WORKSPACE" --cwd "$cwd" --label "$label" --no-focus) ||
     { echo "  ! could not create a tab for #$num" >&2; return 1; }
 
   pane=$(jq -r '.result.root_pane.pane_id // empty' <<<"$out")
@@ -262,7 +284,7 @@ launch() {
   herdr_api herdr agent prompt "issue-$num" "/$skill $arg" >/dev/null ||
     { echo "  ! could not send /$skill $arg to #$num" >&2; return 1; }
 
-  echo "  $label  ->  /$skill $arg  ($pane)"
+  echo "  $label  ->  /$skill $arg  ($pane, $cwd)"
 }
 
 # Read the tracker before printing anything. Inside a process substitution a
@@ -299,7 +321,19 @@ while IFS=$'\t' read -r num action skill arg reason title; do
   printf -- '+ #%-4s %-46.46s  /%s %s (%s)\n' "$num" "$title" "$skill" "$arg" "$reason"
   if [ "$DRY_RUN" -eq 1 ]; then
     ran=$((ran + 1))
-  elif launch "$num" "$skill" "$arg"; then
+    continue
+  fi
+
+  # No worktree, no agent. Falling back to the main checkout would be two
+  # agents in one .next and a commit on whatever branch it happens to be on,
+  # which is worse than this issue waiting for the next run.
+  if ! cwd=$(workdir_for "$skill" "$arg"); then
+    echo "  ! could not get a worktree for #$num -- not starting it in the main checkout" >&2
+    failed=$((failed + 1))
+    continue
+  fi
+
+  if launch "$num" "$skill" "$arg" "$cwd"; then
     ran=$((ran + 1))
   else
     # One issue failing to launch is not a reason to abandon the rest.

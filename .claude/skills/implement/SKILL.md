@@ -130,28 +130,56 @@ scripts/status.sh set <n> in-progress
 Before, not after. The label is how a second agent reading the issue list sees
 the work is taken.
 
-## 3. Worktree and branch
+## 3. You are already in a worktree — prove it
 
-One issue = one agent = one worktree = one branch.
+`scripts/herd.sh` created one for this issue and started you inside it, so
+there is nothing to set up. **Confirm it before you write anything:**
 
 ```bash
-ROOT=$(git rev-parse --show-toplevel)
-WT="$ROOT/../$(basename "$ROOT")-wt/<n>"
-
-git -C "$ROOT" fetch origin
-git -C "$ROOT" worktree add "$WT" -b <type>/<n>-<slug> origin/main
-ln -s "$ROOT/node_modules" "$WT/node_modules"
-ln -sfn "$ROOT/.env" "$WT/.env"
+scripts/worktree.sh assert
 ```
 
-`<type>` comes from the issue's type label: `bug` → `fix/`, `task` →
-`chore/`, `feature` → `feat/`. Branch from `origin/main`, never from local
-`main`, which may be behind.
+It prints the worktree and the branch, or it fails and tells you how to get
+one. It fails when a human typed `/implement <n>` by hand instead of the
+herd starting you — in which case:
 
-`node_modules` is symlinked, not installed — **never run `npm install` in a
-worktree** unless you mean to replace that symlink. `.env` is symlinked too,
-because the gate's integration tests need `DATABASE_URL` and silently skip
-16 suites without it.
+```bash
+cd "$(scripts/worktree.sh issue <n>)"
+```
+
+That is idempotent: it creates the worktree on the first call and prints the
+existing one after that, so it is safe to run when you are unsure.
+
+One issue = one agent = one worktree = one branch. The script names the
+branch from the issue — `fix/` for a `bug`, `chore/` for a `task`, `feat/`
+for a `feature`, then the number and a slug of the title.
+
+**A new branch is cut from freshly fetched `origin/main`**, never from local
+`main`, which may be behind. But if that branch already exists — a previous
+run on this issue that died, or one whose worktree was removed — the script
+**resumes it where it is** rather than recreating it, because throwing away
+commits nobody has seen is worse than an old base. So check what you
+inherited before you assume you are starting clean:
+
+```bash
+git log --oneline origin/main..HEAD    # empty on a fresh branch
+```
+
+If it is not empty, that is your own earlier work. Read it, and continue it
+rather than redoing it. If it is stale enough to matter, rebase onto
+`origin/main` before you build — you have not pushed, so nobody is holding a
+reference to it.
+
+**Never `cd` to the main checkout, and never run the gate there.** Two
+`next build` processes in one checkout corrupt `.next`, which surfaces later
+as `ENOENT .next/routes-manifest.json` in some other agent's run and looks
+like a regression that does not exist. A commit there lands on whatever
+branch that checkout is on, which is usually `main`.
+
+`node_modules` and `.env` are symlinked in from the main checkout, not
+installed — **never run `npm install` in a worktree** unless you mean to
+replace that symlink. `.env` matters: the gate's integration tests need
+`DATABASE_URL` and silently skip 16 suites without it.
 
 ## 4. Build it
 
@@ -213,6 +241,7 @@ work rather than written into the issue. Four things keep that honest:
 ## 5. The gate
 
 ```bash
+scripts/worktree.sh assert      # still in the worktree, not the main checkout
 docker compose up -d db
 npm run verify
 ```

@@ -3,6 +3,7 @@ paths:
   - '.github/**'
   - 'scripts/status.sh'
   - 'scripts/herd.sh'
+  - 'scripts/worktree.sh'
   - '.claude/skills/**'
 ---
 
@@ -115,11 +116,36 @@ merged is a bug; a prompt waiting in an unread pane is neither.
 
 ### One issue, one agent, one worktree, one branch
 
-Branch `feat/<n>-<slug>` for a `feature`, `fix/` for a `bug`, `chore/` for
-a `task`; worktree at `../<repo>-wt/<n>/`, outside the repo and never
-committed. `node_modules` and `.env` are symlinked in from the main
-checkout — don't run `npm install` in a worktree unless you mean to replace
-that symlink.
+`scripts/worktree.sh` owns this, and `herd.sh` calls it **before** it starts
+an agent, so a code-writing agent's cwd is its worktree from its first
+command and the main checkout is never where it lands. If the worktree
+cannot be made, the agent is not started — running it in the main checkout
+is the outcome being avoided, not an acceptable fallback.
+
+```bash
+scripts/worktree.sh issue <n>    # /implement: a new branch off origin/main
+scripts/worktree.sh pr <pr>      # /review-pr: the PR's own branch
+scripts/worktree.sh assert       # fail unless $PWD is a linked worktree
+```
+
+`issue` and `pr` print the path and are idempotent, so a skill invoked by
+hand can call the same command the herd did and get the same directory.
+`assert` is what each skill runs before its first write, which is the half
+that still matters when a human types `/implement 12` themselves.
+
+Worktrees live at `../<repo>-wt/<n>/`, keyed by **issue** number even for
+`/review-pr`, so review lands in the directory the branch was built in
+rather than a second copy of it. Branch `feat/<n>-<slug>` for a `feature`,
+`fix/` for a `bug`, `chore/` for a `task` — the script derives it from the
+type label and the title. `node_modules` and `.env` are symlinked in from
+the main checkout; don't run `npm install` in a worktree unless you mean to
+replace that symlink.
+
+**`/plan` is the exception, and runs in the main checkout.** It writes to
+the issue through `gh`, never to a file, so a worktree would buy nothing —
+which is exactly why it is also forbidden to build, run the gate, or edit
+anything. Two `next build` processes in one checkout corrupt `.next`, and
+the agent that pays for it is whichever one is working in a worktree off it.
 
 ## Exactly one label at a time
 
