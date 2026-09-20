@@ -391,3 +391,39 @@ decomposition, a human approves it, and only then does a second `/plan`
 create the children. Children are live work the moment they exist — a `task`
 child is launched straight at `/implement` by `herd.sh` — so creating them
 before the approval would start code on an unapproved epic.
+
+## D-024 — `herd.sh` creates the worktree; an agent never starts in the main checkout
+
+`scripts/worktree.sh` creates or reuses the worktree for an issue or a PR,
+and `herd.sh` calls it **before** launching, so a code-writing agent's cwd
+is its own worktree from its first command. If the worktree cannot be made,
+the agent is not started at all.
+
+Before this, the worktree was a block of bash in `/implement`'s SKILL.md
+for the agent to copy, and the agent was started with `--cwd` set to the
+main checkout. So "did this agent work in the main checkout" was answered
+by whether a model followed prose — and every way of getting it wrong is
+silent at the time: two `next build` processes in one checkout corrupt
+`.next` and surface as `ENOENT .next/routes-manifest.json` in a _different_
+agent's run, and a commit lands on whichever branch the checkout is on,
+usually `main`.
+
+`assert` stays in the skills as the second half, because a human typing
+`/implement 12` by hand gets no herd and no pre-made worktree. Belt and
+braces is right here: the cheap check runs before every first write.
+
+`/plan` is deliberately exempt and runs in the main checkout. It writes to
+the issue through `gh` and never to a file, so a worktree would buy nothing
+— which is why the skill instead forbids it from building, running the gate
+or editing anything.
+
+Rejected: keeping creation in the skill and adding only the assertion (the
+agent still starts in the main checkout, so every read, and any slip before
+the first assert, happens there); and giving `/plan` a worktree too (a
+directory and a branch per plan, to hold no changes).
+
+Not solved by this: the **database is still shared**. Worktrees isolate the
+filesystem and the branch, not Postgres on :5434, so two agents running
+`npm run verify` at once still collide on `npm run db:seed -- --force`,
+which truncates. The fixtures are written for a shared database, but the
+reseed is not.

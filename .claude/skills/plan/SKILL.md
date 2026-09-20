@@ -63,6 +63,13 @@ you should not be reading this.
   feature. You write the plan and stop; a human moves the label.
 - **Never change a type label.** The type is the routing decision — whether
   this work gets planned at all — and it belongs to whoever filed the issue.
+- **You are read-only on the working tree.** Unlike `/implement` and
+  `/review-pr`, you run in the **main checkout** — there is no worktree,
+  because what you produce goes to the issue through `gh`, not to a file.
+  So: edit nothing, create nothing, and **never run a build or the gate**.
+  A `next build` here corrupts `.next` for every agent working in a
+  worktree off this checkout, and it proves nothing about a plan. Leave the
+  checkout exactly as you found it.
 
 ## 1. Check it is yours to plan
 

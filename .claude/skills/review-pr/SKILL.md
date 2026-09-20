@@ -75,9 +75,18 @@ What is a finding is a PR that quietly outgrew its issue: if the diff on a
 `status:blocked` (§5) rather than reviewing it as though someone had
 approved it.
 
-Work in the PR's existing worktree if it is still there
-(`../<repo>-wt/<n>/`); otherwise check the branch out into a fresh one the
-same way `/implement` does. Never work on `main`.
+`scripts/herd.sh` started you in the worktree for this PR's branch. Confirm
+it before you change anything, and get one if a human invoked you by hand:
+
+```bash
+scripts/worktree.sh assert     # prints the worktree and branch, or fails
+cd "$(scripts/worktree.sh pr <pr>)"   # only if that failed
+```
+
+`worktree.sh pr` reuses the directory `/implement` already built this branch
+in rather than making a second copy of it, and is safe to run twice. **Never
+work in the main checkout** — a commit there lands on whatever branch it is
+on, and a second `next build` in it corrupts `.next` for every other agent.
 
 ## 2. Sort each comment into one of three
 
@@ -124,6 +133,7 @@ never something to work around.
 ## 4. Re-run the gate and push
 
 ```bash
+scripts/worktree.sh assert
 docker compose up -d db
 npm run verify
 ```
