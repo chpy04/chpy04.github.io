@@ -427,3 +427,33 @@ filesystem and the branch, not Postgres on :5434, so two agents running
 `npm run verify` at once still collide on `npm run db:seed -- --force`,
 which truncates. The fixtures are written for a shared database, but the
 reseed is not.
+
+## D-025 — The timeline's step buttons flank the card, not the dot
+
+"Arrows to the left and right of the current one" reads most naturally as
+beside the selected dot, and that is not where they are. Two entries may sit
+`MIN_DOT_GAP` — 2.4% — apart, so a pair of dot-anchored arrows would sit on
+top of their neighbours, and every step would move them horizontally by an
+unpredictable amount. A control that relocates each time you press it is not
+a control you can press five times.
+
+Beside the card they are stationary, they read as the carousel control they
+are, and at laptop width and above they occupy dead space the card's
+`max-w-3xl` already leaves empty. They are flex siblings of the card rather
+than absolutely positioned in that dead space, because at tablet width the
+card fills the shell and there is none — as siblings the card narrows, as
+overlays they would land on top of it.
+
+The dot stays the thing the arrows move. What says which dot that is, is the
+leader line from the dot down to the card's top edge — emphasising the dot
+alone does not answer "which one is being shown" when the answer is 200px
+below and centred, with nothing joining the two.
+
+Rejected: arrows on the axis itself (above), and wrapping from the newest
+entry round to the oldest instead of disabling at the ends, which throws
+away the one thing a date-proportional axis is for — knowing where on it
+you are.
+
+This is the most reversible call in the change. Moving the arrows onto the
+axis touches nothing else: the stepping is `move()` plus a clamp, and the
+leader line is independent of where the buttons are.

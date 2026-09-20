@@ -99,3 +99,26 @@ test('an archived entry is hidden but still reachable to restore', async ({ page
     .click();
   await expect(page.getByRole('button', { name: `Archive ${title}` })).toBeVisible();
 });
+
+test('the timeline arrows step the selection one entry at a time', async ({ page }) => {
+  await page.goto('/');
+
+  const previous = page.getByRole('button', { name: 'Show previous timeline entry' });
+  const next = page.getByRole('button', { name: 'Show next timeline entry' });
+  const panel = page.getByRole('tabpanel');
+  const dots = page.getByRole('tab');
+
+  // The track opens on the most recent entry, which is the right-hand end of
+  // the axis — so "next" starts out spent, and says so rather than no-opping.
+  await expect(next).toBeDisabled();
+
+  const newest = (await panel.getByRole('heading').first().innerText()).trim();
+  const lastDot = (await dots.count()) - 1;
+  await expect(dots.nth(lastDot)).toHaveAttribute('aria-selected', 'true');
+
+  await previous.click();
+
+  await expect(panel.getByRole('heading').first()).not.toHaveText(newest);
+  await expect(dots.nth(lastDot - 1)).toHaveAttribute('aria-selected', 'true');
+  await expect(next).toBeEnabled();
+});

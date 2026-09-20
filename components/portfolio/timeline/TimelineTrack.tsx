@@ -11,6 +11,10 @@ const TRACK_MIN = 3;
 const TRACK_MAX = 97;
 /** Closest two dots may sit before they are nudged apart, in percent. */
 const MIN_DOT_GAP = 2.4;
+/** Where the card's midpoint sits, in percent: it is `mx-auto` in a row the
+ *  two step buttons flank symmetrically, so it is centred whatever the
+ *  viewport. The leader line's lower half is anchored here. */
+const CARD_CENTRE = 50;
 
 interface TimelineTrackProps {
   /** Sorted oldest first — `buildAxis` assumes it. */
@@ -46,10 +50,17 @@ export default function TimelineTrack({ entries }: TimelineTrackProps) {
   })();
   const active = entries[selectedIndex];
 
-  function move(delta: number): void {
+  /**
+   * `focusDot` is what separates the two callers. The tablist's own arrow
+   * keys must move focus with the selection — that is the roving-tabindex
+   * contract. The step buttons must not: focus belongs on the button you
+   * are about to click again, and stealing it would strand the pointer user
+   * mid-sequence.
+   */
+  function move(delta: number, focusDot = true): void {
     const next = Math.min(entries.length - 1, Math.max(0, selectedIndex + delta));
     setSelectedId(entries[next]?.id ?? null);
-    dotRefs.current[next]?.focus();
+    if (focusDot) dotRefs.current[next]?.focus();
   }
 
   function handleKeyDown(event: KeyboardEvent): void {
@@ -66,6 +77,11 @@ export default function TimelineTrack({ entries }: TimelineTrackProps) {
   }
 
   if (!active) return null;
+
+  const selectedPct = axis.positions[selectedIndex] ?? CARD_CENTRE;
+  // The leader takes the selected entry's own colour, which is what ties it
+  // to the dot it left rather than to the card it lands on.
+  const leaderClass = `${dotClass(active.kind)} opacity-50`;
 
   return (
     <div>
@@ -145,8 +161,8 @@ export default function TimelineTrack({ entries }: TimelineTrackProps) {
                 aria-hidden="true"
                 className={`block rounded-full transition-all duration-200 ${dotClass(entry.kind)} ${
                   isSelected
-                    ? 'h-3.5 w-3.5 ring-4 ring-ink/15'
-                    : 'h-2.5 w-2.5 opacity-60 group-hover:opacity-100'
+                    ? 'h-4 w-4 ring-4 ring-ink/30'
+                    : 'h-2 w-2 opacity-50 group-hover:opacity-100'
                 } ${entry.isArchived ? 'opacity-30' : ''}`}
               />
             </button>
@@ -154,13 +170,93 @@ export default function TimelineTrack({ entries }: TimelineTrackProps) {
         })}
       </div>
 
-      {/* Detail panel. Keyed on the entry so switching selection remounts
-          the card and replays the entrance animation. */}
-      <div role="tabpanel" className="relative min-h-[220px]">
-        <div key={active.id} className="motion-safe:animate-fade-up">
-          <TimelineCard entry={active} className="mx-auto max-w-3xl" />
+      {/* Leader line. Emphasising the dot alone cannot say which card is
+          showing — the card is centred a long way below it and two dots can
+          sit 2.4% apart — so the selection is drawn as a path the eye can
+          follow: down from the dot, across, then down into the card's top
+          edge. `-mt-4` pulls it into the empty lower half of the dots row so
+          it starts at the dot rather than below the hit areas, which is also
+          why it may not swallow pointer events. */}
+      <div aria-hidden="true" className="pointer-events-none relative -mt-4 h-10">
+        <span
+          className={`absolute top-0 h-5 w-px -translate-x-1/2 transition-all duration-200 ${leaderClass}`}
+          style={{ left: `${selectedPct}%` }}
+        />
+        <span
+          className={`absolute top-5 h-px transition-all duration-200 ${leaderClass}`}
+          style={{
+            left: `${Math.min(selectedPct, CARD_CENTRE)}%`,
+            width: `${Math.abs(CARD_CENTRE - selectedPct)}%`,
+          }}
+        />
+        <span
+          className={`absolute top-5 h-5 w-px -translate-x-1/2 ${leaderClass}`}
+          style={{ left: `${CARD_CENTRE}%` }}
+        />
+      </div>
+
+      {/* Detail panel. The step buttons flank the card rather than the dots:
+          neighbouring dots can be 2.4% apart, so axis-anchored arrows would
+          overlap them and jump horizontally on every step (D-025). They are
+          flex siblings, not absolutely positioned, so at tablet width — where
+          the card fills the shell and there is no dead space — the card
+          narrows instead of the arrows landing on top of it.
+
+          Keyed on the entry so switching selection remounts the card and
+          replays the entrance animation. */}
+      <div
+        role="tabpanel"
+        className="relative flex min-h-[220px] items-center justify-center gap-2 tablet:gap-4"
+      >
+        <StepButton direction={-1} disabled={selectedIndex === 0} onClick={() => move(-1, false)} />
+        <div key={active.id} className="min-w-0 max-w-3xl flex-1 motion-safe:animate-fade-up">
+          <TimelineCard entry={active} />
         </div>
+        <StepButton
+          direction={1}
+          disabled={selectedIndex === entries.length - 1}
+          onClick={() => move(1, false)}
+        />
       </div>
     </div>
+  );
+}
+
+interface StepButtonProps {
+  direction: 1 | -1;
+  disabled: boolean;
+  onClick: () => void;
+}
+
+/**
+ * Previous/next through the entries in date order. Disabled at either end
+ * rather than wrapping: wrapping from the newest entry back to the oldest
+ * destroys the one thing a date-proportional axis is for, which is knowing
+ * where on it you are.
+ */
+function StepButton({ direction, disabled, onClick }: StepButtonProps) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={direction === -1 ? 'Show previous timeline entry' : 'Show next timeline entry'}
+      className="shrink-0 rounded-full border border-line p-2 text-ink-dim transition-colors enabled:hover:border-line-hover enabled:hover:bg-surface enabled:hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-ink/70 disabled:cursor-not-allowed disabled:opacity-25"
+    >
+      <svg
+        className="h-5 w-5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d={direction === -1 ? 'M15 19l-7-7 7-7' : 'M9 5l7 7-7 7'}
+        />
+      </svg>
+    </button>
   );
 }
