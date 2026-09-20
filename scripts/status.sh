@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #
-# Set an issue's lifecycle status, and find the issues a PR closes.
+# Set an issue's lifecycle status, read its type, and find the issues a PR
+# closes.
 #
 # Status lives in a `status:*` label on the issue itself. One implementation,
 # used from two places: agents run it by hand for the transitions only they
@@ -17,17 +18,24 @@
 # there is no secret to rotate or forget. Labels also survive a migration to
 # Linear or Jira, where a bespoke GitHub board would not.
 #
-# SETUP: the seven labels must exist in the repo before this works. Run
+# The type labels live here too, because they are the other half of the same
+# vocabulary: `bug`, `task` and `feature` decide which skill an issue routes
+# to at all (.claude/rules/github.md), and `type` is how a skill reads that
+# without hand-rolling jq in three places. Only a human writes one.
+#
+# SETUP: the labels must exist in the repo before this works. Run
 # `scripts/status.sh init-labels` once.
 #
 # Usage:
 #   scripts/status.sh set <issue-number> <status>
 #   scripts/status.sh get <issue-number>
+#   scripts/status.sh type <issue-number>
 #   scripts/status.sh pr-issues <pr-number>
 #   scripts/status.sh init-labels
 #
 # <status> is accepted in either dialect -- "In Progress" as the lifecycle
-# table in CLAUDE.md writes it, or `in-progress` as the label spells it.
+# table in .claude/rules/github.md writes it, or `in-progress` as the label
+# spells it.
 
 set -euo pipefail
 
@@ -42,6 +50,11 @@ REPO="${APP_REPO:-$(gh repo view --json nameWithOwner --jq .nameWithOwner 2>/dev
 # and adding an unknown label via the API would have GitHub silently create it
 # in a random colour rather than fail.
 STATUSES=(backlog planning ready in-progress in-review blocked done)
+
+# The type vocabulary. `epic` is not a template's label -- it goes on by hand
+# and outranks whichever template filed the issue, because the epic route is
+# the one that applies when both are present.
+TYPES=(bug task feature)
 
 # Colours are cosmetic but the ordering they imply is not: cold for waiting,
 # warm for active, red for stuck, green for finished.
@@ -108,8 +121,38 @@ get_status() {
   echo "$found"
 }
 
-# Idempotent: creates the seven status labels plus `feedback` and `epic`.
-# Run once per repo. Everything else here refuses to invent a label.
+# The issue's type -- what decides whether it gets a plan stage before any
+# code. Fails loudly on none and on more than one, because both are a routing
+# decision an agent must not resolve for itself: it would be choosing whether
+# to face the approval gate.
+type_of() {
+  local names found=""
+  names=$(gh api "repos/$REPO/issues/$1/labels" --jq '.[].name') ||
+    die "issue #$1 not found in $REPO"
+
+  # `epic` wins: an epic filed from the feature template wears both, and the
+  # epic route is the one that applies.
+  if grep -qFx "epic" <<<"$names"; then
+    echo "epic"
+    return
+  fi
+
+  for known in "${TYPES[@]}"; do
+    grep -qFx "$known" <<<"$names" && found="$found $known"
+  done
+  found=${found# }
+
+  [ -n "$found" ] || die "#$1 has no type label -- whoever files an issue picks one of: ${TYPES[*]}, epic"
+  case "$found" in
+    *' '*) die "#$1 wears more than one type label ($found) -- an issue has exactly one" ;;
+  esac
+
+  echo "$found"
+}
+
+# Idempotent: creates the seven status labels, the four type labels and
+# `feedback`. Run once per repo. Everything else here refuses to invent a
+# label.
 init_labels() {
   local created=0
   for entry in "${LABEL_COLORS[@]}"; do
@@ -123,9 +166,12 @@ init_labels() {
     fi
   done
 
-  # `feedback` marks an issue the in-app widget filed; `epic` is applied by
-  # hand and is what routes an issue down /triage's epic track.
-  for entry in "feedback:1d76db" "epic:b60205"; do
+  # The type labels route the issue (.claude/rules/github.md), so they are as
+  # load-bearing as the status ones and are created here rather than left to
+  # whatever GitHub happens to ship a new repo with. `feedback` marks an issue
+  # the in-app widget filed; `epic` is applied by hand and routes an issue
+  # down /plan's epic track.
+  for entry in "bug:d73a4a" "task:cfd3d7" "feature:a2eeef" "epic:b60205" "feedback:1d76db"; do
     local name="${entry%%:*}" color="${entry##*:}"
     if gh api "repos/$REPO/labels/$name" >/dev/null 2>&1; then
       echo "  exists  $name"
@@ -155,7 +201,8 @@ pr_issues() {
 case "${1:-}" in
   set) [ $# -eq 3 ] || die "usage: status.sh set <issue-number> <status>"; set_status "$2" "$3" ;;
   get) [ $# -eq 2 ] || die "usage: status.sh get <issue-number>"; get_status "$2" ;;
+  type) [ $# -eq 2 ] || die "usage: status.sh type <issue-number>"; type_of "$2" ;;
   pr-issues) [ $# -eq 2 ] || die "usage: status.sh pr-issues <pr-number>"; pr_issues "$2" ;;
   init-labels) [ $# -eq 1 ] || die "usage: status.sh init-labels"; init_labels ;;
-  *) die "usage: status.sh set <issue-number> <status> | get <issue-number> | pr-issues <pr-number> | init-labels" ;;
+  *) die "usage: status.sh set <issue-number> <status> | get <issue-number> | type <issue-number> | pr-issues <pr-number> | init-labels" ;;
 esac

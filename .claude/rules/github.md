@@ -9,7 +9,7 @@ paths:
 # GitHub: issues, status, and PRs
 
 **This is the unattended pipeline's rulebook, and nothing else reads it.**
-It is the shared half of `/triage`, `/implement` and `/review-pr` — the
+It is the shared half of `/plan`, `/implement` and `/review-pr` — the
 lifecycle those three move an issue through, plus the commands and the
 conventions for the plumbing itself.
 
@@ -19,35 +19,74 @@ file an issue, do not move a label, do not post a plan and wait. If you are
 reading this because you opened a file under `.github/`, you want the
 mechanics below, not the lifecycle.
 
+## The type label decides the route
+
+Two labels describe an issue. Its **type** — `bug`, `task`, `feature`, or
+`epic` — says what kind of work it is and therefore which route it takes.
+Its **status** says where on that route it currently is.
+
+The type is applied by whoever files the issue: the three templates each
+apply their own, and `epic` goes on by hand. **No agent chooses it and no
+agent changes it**, because it is the decision that says whether the work
+gets a plan and an approval step at all — an agent that could set it could
+delete the only gate standing in front of itself.
+
+| type      | plan stage | route                                                                       |
+| --------- | ---------- | --------------------------------------------------------------------------- |
+| `bug`     | no         | `backlog` → `/implement` → PR                                               |
+| `task`    | no         | `backlog` → `/implement` → PR                                               |
+| `feature` | yes        | `backlog` → `/plan` → `planning` → **human** → `ready` → `/implement` → PR  |
+| `epic`    | yes, twice | `backlog` → `/plan` → `planning` → **human** → `ready` → `/plan` → children |
+
+**Filing a bug or a task is the approval.** There is no second gate in front
+of it, which is why `/implement` may take one straight out of
+`status:backlog` and why it will not find a plan when it gets there. That is
+the trade the label makes: work small enough that the approach is not worth
+a round trip skips the round trip, and `/implement` does the deciding inline
+and writes it into the PR body instead of into the issue.
+
+A `feature` is the case where the approach _is_ worth a round trip, and its
+gate is `planning → ready`. An `epic` is a decomposition rather than a piece
+of work: `/plan` writes its requirements and the children it proposes,
+a human approves that list, and only then — a second `/plan` — do the
+children get created, each with its own type label and its own route.
+
+What an agent may always do is **say the label is wrong**. `/implement`
+blocks a `task` that turns out to be feature-sized and says it needs a plan;
+`/plan` stops on a `bug` and says it does not. The relabel is the human's.
+
 ## The lifecycle, and where each skill stops
 
 Task state is one `status:*` label on the issue — the only record there is.
 Nothing in `docs/` tracks progress.
 
-| label                | means                                           | set by    |
-| -------------------- | ----------------------------------------------- | --------- |
-| `status:backlog`     | filed, nobody has triaged it                    | automatic |
-| `status:planning`    | an agent is writing the approach into the issue | agent     |
-| `status:ready`       | the plan is approved; **no agent has it yet**   | **human** |
-| `status:in-progress` | an agent has claimed it and is working          | agent     |
-| `status:in-review`   | PR is open and not a draft                      | automatic |
-| `status:blocked`     | an agent needs a decision only a human can make | agent     |
-| `status:done`        | PR merged, issue closed                         | automatic |
+| label                | means                                                                   | set by    |
+| -------------------- | ----------------------------------------------------------------------- | --------- |
+| `status:backlog`     | filed and queued: a `bug`/`task` is ready to build, a `feature` to plan | automatic |
+| `status:planning`    | an agent is writing the approach into a `feature` or `epic`             | agent     |
+| `status:ready`       | the plan is approved; **no agent has it yet**                           | **human** |
+| `status:in-progress` | an agent has claimed it and is working                                  | agent     |
+| `status:in-review`   | PR is open and not a draft                                              | automatic |
+| `status:blocked`     | an agent needs a decision only a human can make                         | agent     |
+| `status:done`        | PR merged, issue closed                                                 | automatic |
 
-| skill             | phase                         | ends at                                          |
-| ----------------- | ----------------------------- | ------------------------------------------------ |
-| `/triage <n>`     | size the issue and plan it    | `status:ready`, or `status:planning` for a human |
-| `/implement <n>`  | build it and open the PR      | a PR, never a merge                              |
-| `/review-pr <pr>` | answer review until mergeable | green and answered, never a merge                |
+| skill             | phase                             | ends at                           |
+| ----------------- | --------------------------------- | --------------------------------- |
+| `/plan <n>`       | plan a feature, decompose an epic | `status:planning`, for a human    |
+| `/implement <n>`  | build it and open the PR          | a PR, never a merge               |
+| `/review-pr <pr>` | answer review until mergeable     | green and answered, never a merge |
 
 **The three never invoke each other**, and none of them can invoke itself —
 each is `disable-model-invocation: true`, so a slash command is the only way
 in. A phase boundary is a human decision, and three separate invocations is
 what keeps it one. `scripts/herd.sh` is what starts them: it reads every
-open issue and launches one agent per issue on the skill its status calls
-for.
+open issue and launches one agent per issue on the skill that issue's type
+and status call for.
 
 ### planning → ready is a human gate
+
+Only a `feature` or an `epic` ever reaches it — that is what those labels
+buy, and it is the whole difference between them and a `task`.
 
 No agent may decide its own plan is approved. You set `status:planning`,
 write the plan into the issue, and **stop there**. A human swaps the label
@@ -57,20 +96,27 @@ start.
 `ready` and `in-progress` are deliberately separate, because "approved" and
 "someone is on it" are different facts and the tracker is useless if it
 cannot tell them apart. `ready` is a queue of blessed work waiting for an
-agent. Moving `ready → in-progress` is how an agent **claims** an issue — do
-it before writing code, so a second agent can see the work is taken.
+agent — as, for a `bug` or a `task`, is `backlog`. Moving into
+`in-progress` is how an agent **claims** an issue — do it before writing
+code, so a second agent can see the work is taken.
 
 So: `planning` waits on a human. `ready` waits on an agent. `in-progress`
 means an agent already has it, including one reworking a PR after review.
 
-If you hit something only a human can answer, `scripts/status.sh set <n>
-blocked`, comment with the precise question, and stop. A blocked issue is
-information; a guess that got merged is a bug.
+### The skills are unattended, and do not ask
+
+`herd.sh` opens a terminal per issue and nobody is reading it yet. A
+question asked there is the run stopping, silently. So the skills decide
+what they can decide and write the reasoning where a human will find it —
+**Key decisions** in a plan, the PR body on unplanned work — and where they
+genuinely cannot decide, `scripts/status.sh set <n> blocked` plus a comment
+with the precise question. A blocked issue is information; a guess that got
+merged is a bug; a prompt waiting in an unread pane is neither.
 
 ### One issue, one agent, one worktree, one branch
 
-Branch `feat/<n>-<slug>` (or `fix/`, `chore/` — match the issue's type
-label), worktree at `../<repo>-wt/<n>/`, outside the repo and never
+Branch `feat/<n>-<slug>` for a `feature`, `fix/` for a `bug`, `chore/` for
+a `task`; worktree at `../<repo>-wt/<n>/`, outside the repo and never
 committed. `node_modules` and `.env` are symlinked in from the main
 checkout — don't run `npm install` in a worktree unless you mean to replace
 that symlink.
@@ -97,16 +143,22 @@ scripts/status.sh pr-issues <pr-number>              # the issues a PR closes
 scripts/status.sh init-labels                        # once per repo, at setup
 ```
 
+```bash
+scripts/status.sh type <issue-number>                # bug | task | feature | epic
+```
+
 It reads the repo from this checkout's `origin` remote, so a fresh clone
-needs no edit; `APP_REPO=owner/name` overrides it. The seven labels must
-exist before `set` will work — `init-labels` creates them (plus `feedback`
-and `epic`) and is idempotent.
+needs no edit; `APP_REPO=owner/name` overrides it. The seven status labels
+must exist before `set` will work — `init-labels` creates them, plus the
+four type labels and `feedback`, and is idempotent. `type` fails loudly on
+an issue wearing none of them or more than one, because a routing decision
+that is missing or ambiguous is not one an agent may resolve for itself.
 
 `set` takes either dialect — `"In Progress"` as the lifecycle table above
 writes it, or `in-progress` as the label spells it.
 
-Agents set `planning` (starting to plan), `in-progress` (claiming approved
-work) and `blocked`. Everything else is either automatic
+Agents set `planning` (starting to plan), `in-progress` (claiming work, and
+on an epic whose children now exist) and `blocked`. Everything else is either automatic
 (`.github/workflows/status.yml`) or the human's — `planning → ready` is the
 approval gate, and an agent must never make that move itself. Claiming an
 issue out of `ready` is fine and expected; promoting your own plan out of
@@ -158,8 +210,8 @@ CI needs no secret at all: `status.yml` runs on the default `GITHUB_TOKEN`.
 
 An issue is a human-requested behaviour, and only a human decides one exists.
 Two things count as that decision: the human asking outright ("make a separate
-issue for this"), and the `epic` label, whose children an agent creates as
-sub-issues while planning it. Nothing else — a bug you tripped over, a
+issue for this"), and an `epic` a human has already approved, whose children
+`/plan` then creates as sub-issues. Nothing else — a bug you tripped over, a
 refactor that suggests itself, a follow-up the PR made obvious — goes in your
 reply or as a comment on the issue you are already working.
 
@@ -169,14 +221,21 @@ plan; do not split the work on your own initiative.
 
 ## Issue templates
 
-`.github/ISSUE_TEMPLATE/*.yml` — `bug`, `feature`, `chore`. Each applies its
-own label, so an issue's type is readable off a list without opening it. The
-`epic` label is separate and applied by hand: it is what routes an issue down
-the epic track when an agent triages it, and it is never inferred.
+`.github/ISSUE_TEMPLATE/*.yml` — `bug`, `task`, `feature`. Each applies its
+own label, and that label is the routing decision above, so picking the
+template is how the filer says whether the work gets a plan stage. The
+`epic` label is separate and applied by hand; it is never inferred.
+
+Choosing between them is a human judgement and belongs in the template
+descriptions, not in an agent: a `task` is work whose approach is obvious
+and local, a `feature` is work where a human might say "no, do it the other
+way".
 
 The in-app feedback widget files issues through the REST API
-(`lib/feedback/issue.ts`), which **bypasses templates entirely**. Keep the
-`bug` template's fields aligned with the body that widget generates, or the
+(`lib/feedback/issue.ts`), which **bypasses templates entirely** — so it
+applies the type label itself, `bug` or `feature`, and a feature filed from
+the widget takes the planning route like any other. Keep the `bug`
+template's fields aligned with the body that widget generates, or the
 tracker ends up with two dialects of bug report.
 
 ## PRs

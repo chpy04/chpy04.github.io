@@ -43,7 +43,7 @@ test('a whitespace-only description still produces a usable title', () => {
 
 test('labels carry both the source and the kind', () => {
   assert.deepEqual(issueLabels('bug'), ['feedback', 'bug']);
-  assert.deepEqual(issueLabels('feature'), ['feedback', 'enhancement']);
+  assert.deepEqual(issueLabels('feature'), ['feedback', 'feature']);
 });
 
 test('the body leads with the type and the route, without the host', () => {

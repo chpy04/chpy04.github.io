@@ -10,12 +10,20 @@ You have been pointed at **one** open PR. Answer everything outstanding on it,
 get the gate green, and hand it back. Then stop.
 
 This is the last of the three **unattended** phases. **Never invoke
-`/triage` or `/implement`** — a human decides when a phase begins.
+`/plan` or `/implement`** — a human decides when a phase begins.
+
+**Nobody is watching you run.** You were almost certainly started by
+`scripts/herd.sh` into a terminal no one is reading yet, and a question you
+ask there is not a question — it is the run stopping, silently, until
+somebody notices. So do not ask any. A review is already a conversation with
+a written record: what you would ask goes on the thread, in the PR, or on
+the issue as `status:blocked` (§5).
 
 Everything this skill leans on that is not written here — the seven
-`status:*` labels, the `planning → ready` human gate, `scripts/status.sh`,
-the worktree and branch convention, the PR conventions — is in
-`.claude/rules/github.md`. Read it first.
+`status:*` labels, the type labels and the route each one takes, the
+`planning → ready` human gate, `scripts/status.sh`, the worktree and branch
+convention, the PR conventions — is in `.claude/rules/github.md`. Read it
+first.
 
 You are here because something typed `/review-pr <pr>`. That is the only way in: this
 skill is `disable-model-invocation: true` and never fires on its own, on a
@@ -26,7 +34,9 @@ you should not be reading this.
 
 ## Hard limits
 
-- **Exactly one PR, and it is given to you.** `/review-pr <pr-number>` takes the number as its argument. If you were invoked without one, ask which PR — never list, search or scan to pick one yourself, and never work more than one in a single invocation. Choosing what to work on is the human's job, and an agent that goes looking will find work nobody queued.
+- **Never ask a question.** There is no one in the pane to answer it. Put
+  it on the thread, in the PR body, or on the issue with `status:blocked`.
+- **Exactly one PR, and it is given to you.** `/review-pr <pr-number>` takes the number as its argument. If you were invoked without one, say so and stop — never list, search or scan to pick one yourself, and never work more than one in a single invocation. Choosing what to work on is the human's job, and an agent that goes looking will find work nobody queued.
 - **Never merge.** Even when the gate is green and a human has approved.
   Merging is irreversible and outward-facing; the human presses it, and
   `status.yml` closes the issue and sets `status:done` from there.
@@ -47,19 +57,29 @@ gh api "repos/$(gh repo view --json nameWithOwner -q .nameWithOwner)/pulls/<pr>/
 gh pr view <pr> --comments                            # top-level discussion
 ```
 
-Then read the issue behind it, because the approved plan is the standard the
-PR is measured against — not your own taste:
+Then read the issue behind it, because the issue is the standard the PR is
+measured against — not your own taste:
 
 ```bash
 scripts/status.sh pr-issues <pr>
-gh issue view <n>
+scripts/status.sh type <n>
+gh issue view <n> --comments
 ```
+
+On a `feature` that standard is the approved plan in the issue body. On a
+`bug` or a `task` there is no plan and never was one — the human's label
+said the work did not need a round trip — so the standard is the issue text
+plus the approach the PR body states. **A missing plan is not a finding.**
+What is a finding is a PR that quietly outgrew its issue: if the diff on a
+`task` has become feature-sized, say so on the PR and set the issue
+`status:blocked` (§5) rather than reviewing it as though someone had
+approved it.
 
 Work in the PR's existing worktree if it is still there
 (`../<repo>-wt/<n>/`); otherwise check the branch out into a fresh one the
 same way `/implement` does. Never work on `main`.
 
-## 2. Triage each comment into one of three
+## 2. Sort each comment into one of three
 
 Go through every unresolved comment. Each is exactly one of:
 
@@ -115,7 +135,7 @@ integration suites self-skipped and the green is on a subset.
 Commit and push to the same branch. Changes requested sets
 `status:in-progress` again on its own; you do not set it.
 
-## 5. Report and stop
+## 5. Report, block if you must, and stop
 
 Tell the human, in their reply:
 
@@ -132,5 +152,6 @@ for that — marking it ready is what sets `status:in-review`.
 
 If something genuinely needs a human decision before the PR can move — two
 reviewers disagreeing with each other, a review that contradicts the approved
-plan — set the _issue_ to `status:blocked`, comment with the precise question,
-and stop.
+plan, a PR that has outgrown the label its issue wears — set the _issue_ to
+`status:blocked`, comment with the precise question, and stop. That comment
+is the question, asked where the human will find it.

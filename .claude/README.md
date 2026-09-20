@@ -7,11 +7,15 @@ Checked-in configuration for agents working in this repo.
   none of it costs context on unrelated work. `CLAUDE.md` at the repo root
   carries the always-loaded half: what the app is, the five silent
   invariants, and the merge gate.
-- **`skills/*/SKILL.md`** — one per phase of the task lifecycle: `triage`,
-  `implement`, `review-pr`. A human invokes each by hand (`/triage 42`), and
-  they deliberately never invoke each other — a phase boundary is a human
-  decision (D-011). Unlike `rules/`, a skill is a _procedure_ rather than a
-  convention: it costs no context until someone asks for it.
+- **`skills/*/SKILL.md`** — one per phase of the **unattended** task
+  lifecycle: `plan`, `implement`, `review-pr`. Each is invoked by hand
+  (`/plan 42`) or by `scripts/herd.sh`, and they deliberately never invoke
+  each other — a phase boundary is a human decision (D-011). Every one is
+  `disable-model-invocation: true`, so none of this exists as far as an
+  ordinary session is concerned, and `CLAUDE.md` does not mention them:
+  a session with a human in it takes its approval in conversation.
+  Unlike `rules/`, a skill is a _procedure_ rather than a convention: it
+  costs no context until someone asks for it.
 - **`settings.json`** — permission allowlist for the project's own read-only
   and verification commands, so the gate can be run without a prompt per
   step.

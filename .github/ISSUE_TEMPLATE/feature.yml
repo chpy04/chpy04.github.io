@@ -1,6 +1,10 @@
+# The label this applies is a routing decision: `feature` gets a written plan
+# and your approval before any code (.claude/rules/github.md). Pick `task`
+# instead when the approach is obvious and you would not want to read it
+# first.
 name: Feature
-description: A new capability, or a change to how an existing one works
-labels: ['enhancement']
+description: A new capability, or a change to how an existing one works. Planned and approved before it is built
+labels: ['feature']
 body:
   - type: textarea
     id: problem

@@ -1,8 +1,11 @@
 # Mirrors the shape the in-app feedback widget files (lib/feedback/issue.ts),
 # so a hand-written bug and a widget-filed one read the same on the board.
 # Keep the two aligned, or the tracker ends up with two dialects of bug report.
+#
+# `bug` has no plan stage: it is built straight out of the backlog
+# (.claude/rules/github.md).
 name: Bug
-description: Something in the app does not behave the way it should
+description: Something in the app does not behave the way it should. Fixed without a planning round trip
 labels: ['bug']
 body:
   - type: textarea

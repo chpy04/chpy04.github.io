@@ -30,8 +30,13 @@ export interface FeedbackIssueInput {
   submittedAt?: Date;
 }
 
-/** The repo's own label vocabulary. `feedback` marks the widget as the source. */
-const KIND_LABEL: Record<FeedbackKind, string> = { bug: 'bug', feature: 'enhancement' };
+/**
+ * The repo's own label vocabulary. `feedback` marks the widget as the source;
+ * the kind maps to the type label, which is what routes the issue — a `bug`
+ * is built straight out of the backlog, a `feature` is planned and approved
+ * first (`.claude/rules/github.md`).
+ */
+const KIND_LABEL: Record<FeedbackKind, string> = { bug: 'bug', feature: 'feature' };
 const KIND_TITLE: Record<FeedbackKind, string> = { bug: 'Bug', feature: 'Feature' };
 
 const TITLE_SUMMARY_MAX = 72;

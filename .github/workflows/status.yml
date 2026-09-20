@@ -2,7 +2,8 @@
 # are unambiguously inferable from an event live here -- a PR being opened means
 # "ready for review", a PR being merged means "done". The transitions that
 # depend on judgement (-> planning, -> in-progress, -> blocked) or on a human's
-# approval (-> ready) are deliberately absent: see the lifecycle in CLAUDE.md.
+# approval (-> ready) are deliberately absent: see the lifecycle in
+# .claude/rules/github.md.
 #
 # Runs on the default GITHUB_TOKEN. That is the point of D-010: status is a
 # label, an ordinary repository permission, so there is no secret to configure
