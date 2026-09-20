@@ -3,6 +3,7 @@ paths:
   - '.github/**'
   - 'scripts/status.sh'
   - 'scripts/herd.sh'
+  - 'scripts/worktree.sh'
   - '.claude/skills/**'
 ---
 
