@@ -1,6 +1,6 @@
 # Maze Generator and Solver
 
-![image](/images/projects/maze.gif)
+![image](https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/projects/maze.gif)
 
 ## Overview
 

@@ -12,6 +12,12 @@ import { defineConfig, devices } from '@playwright/test';
  * instead of a second server here, because two concurrent `next dev`
  * processes cannot share a build directory and splitting them makes Next
  * rewrite `tsconfig.json`/`next-env.d.ts` on every run.
+ *
+ * `npm run test:e2e` runs this through `node --env-file-if-exists=.env` so
+ * that `.env` reaches both halves. Next would read it for the server either
+ * way, but `e2e/uploads.spec.ts` decides in *this* process whether storage
+ * is configured, and the two disagreeing means the upload test skips on a
+ * machine that could have run it.
  */
 export default defineConfig({
   testDir: './e2e',
@@ -45,6 +51,13 @@ export default defineConfig({
       APP_PASSWORD: 'e2e-password',
       AUTH_SECRET: 'e2e-secret',
       APP_AUTH_MODE: 'password',
+      // Listed rather than left to inheritance so this block stays the whole
+      // answer to "what is this server configured with". Absent is a valid
+      // state: the upload spec skips and every other spec is unaffected.
+      ...(process.env.SUPABASE_URL ? { SUPABASE_URL: process.env.SUPABASE_URL } : {}),
+      ...(process.env.SUPABASE_SERVICE_ROLE_KEY
+        ? { SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY }
+        : {}),
     },
   },
 });

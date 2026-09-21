@@ -6,6 +6,7 @@
  * of the app is readable in one file.
  */
 import { z } from 'zod';
+import { ALLOWED_UPLOAD_TYPES, MAX_UPLOAD_BYTES } from './storage/media.ts';
 import { TIMELINE_KINDS } from './types.ts';
 
 const uuid = z.string().uuid();
@@ -47,6 +48,35 @@ export const feedbackSchema = z.object({
   url: z.string('is required').min(1, 'is required'),
   viewport: z.string().optional(),
   userAgent: z.string().optional(),
+});
+
+// ---------------------------------------------------------------------------
+// Uploads
+// ---------------------------------------------------------------------------
+
+/**
+ * Describes a file that is *about* to be uploaded — the bytes themselves go
+ * straight from the browser to Supabase and never pass through here (D-027).
+ *
+ * So this is a claim, not a measurement: a caller could understate `bytes`
+ * or lie about `contentType`. The bucket's own `file_size_limit` and
+ * `allowed_mime_types` are what actually hold, and they are set to the same
+ * numbers. What this schema buys is the good error — told at the drop rather
+ * than after a 50 MB upload.
+ */
+export const createUploadSchema = z.object({
+  filename: nonEmpty.max(300, 'is too long'),
+  contentType: z
+    .string('is required')
+    .refine(
+      (value) => ALLOWED_UPLOAD_TYPES.includes(value.toLowerCase()),
+      `must be one of ${ALLOWED_UPLOAD_TYPES.join(', ')}`,
+    ),
+  bytes: z
+    .number('is required')
+    .int('must be a whole number of bytes')
+    .positive('must not be empty')
+    .max(MAX_UPLOAD_BYTES, `is over the ${MAX_UPLOAD_BYTES / 1024 / 1024} MB limit`),
 });
 
 // ---------------------------------------------------------------------------

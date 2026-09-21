@@ -1,6 +1,6 @@
 # Image Compressor with Seam Carving Algorithm
 
-![image](/images/projects/squeeze.gif)
+![image](https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/projects/squeeze.gif)
 
 ## Overview
 

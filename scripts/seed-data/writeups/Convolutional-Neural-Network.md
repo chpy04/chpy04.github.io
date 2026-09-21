@@ -1,6 +1,6 @@
 # Convolutional Neural Network From Scratch
 
-![image](/images/projects/numbers.png)
+![image](https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/projects/numbers.png)
 
 ## Overview
 
@@ -140,13 +140,13 @@ This sample model encorperates many different layers. Notice how the output of e
 
 While all the settings in this project are well researched and have known strengths and weaknesses, it is still fascinating to see those same results from self conducted testing. For example, using a standard convolutional network with 5x5 filters, a depth of 10, and a pooling layer, many different learning rates were tested:
 
-![image](/images/projects/learningRates.png)
+![image](https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/projects/learningRates.png)
 
 There is a clear sweet spot for the learning rate at about 0.15. This curve happens because too low of a learning rate causes the network to get stuck in small local minimums, while too high learning rates skip back and forth across minimums never reaching the bottom.
 
 Dense networks sizes were also compared. Using a dense network with 784 starting neurons, a hidden layer of x neurons, and a final layer of 10 neurons, this chart displays how adding more neurons changes the networks performance:
 
-![image](/images/projects/denseNeurons.png)
+![image](https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/projects/denseNeurons.png)
 
 The chart shows that there is initially a clear relationship between adding neurons and performance, but at some point this is no longer the case. This is a clear example of why bigger networks are not always better.
 

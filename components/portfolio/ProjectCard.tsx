@@ -6,6 +6,7 @@ import AdminField from '@/components/admin/AdminField';
 import AdminStrip from '@/components/admin/AdminStrip';
 import ArchiveToggle from '@/components/admin/ArchiveToggle';
 import EditableText from '@/components/admin/EditableText';
+import UploadZone from '@/components/admin/UploadZone';
 import ProjectModal from '@/components/portfolio/ProjectModal';
 import { useSite } from '@/components/SiteProvider';
 import { canNudge } from '@/lib/reorder';
@@ -103,6 +104,10 @@ export default function ProjectCard({ project, visibleIds }: ProjectCardProps) {
         ) : (
           <div className="h-full w-full rounded-lg border border-dashed border-line" />
         )}
+        <UploadZone
+          label="project image"
+          onUploaded={(imagePath) => saveProject(project.id, { imagePath })}
+        />
       </div>
 
       <EditableText
@@ -194,7 +199,7 @@ export default function ProjectCard({ project, visibleIds }: ProjectCardProps) {
         <AdminField
           label="Image"
           value={project.imagePath}
-          placeholder="/images/projects/x.png"
+          placeholder="drop a file on the image, or paste a URL"
           onCommit={(imagePath) => saveProject(project.id, { imagePath })}
           className="flex-1"
         />

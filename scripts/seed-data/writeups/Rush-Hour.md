@@ -1,6 +1,6 @@
 # Rush Hour Game
 
-![image](/images/projects/RH.gif)
+![image](https://kaqcbtiwhuscwqudqkki.supabase.co/storage/v1/object/public/portfolio-media/seed/images/projects/RH.gif)
 
 ## Overview
 

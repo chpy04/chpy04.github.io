@@ -23,12 +23,14 @@ import {
   reorderProjects,
   updateSocial,
   updateTimelineEntry,
+  uploadMedia as uploadMediaFile,
   type ProfilePatch,
   type ProjectPatch,
   type TimelinePatch,
 } from '@/lib/api-client';
 import { AUTH_EXPIRED_EVENT } from '@/lib/auth-client';
 import { moveTo, nudge } from '@/lib/reorder';
+import { chooseUpload } from '@/lib/storage/media';
 import type { Project, SiteContent, SocialLink, TimelineEntry } from '@/lib/types';
 
 /**
@@ -57,12 +59,28 @@ interface SiteContextValue {
   canEdit: boolean;
   /** Edit affordances are live. Never true unless `canEdit`. */
   editing: boolean;
+  /** A file is being dragged somewhere over the window. Every upload zone
+   *  shows itself while this is true, so "where can I drop this?" is
+   *  answered before the aiming starts. */
+  fileDragging: boolean;
   setEditing: (on: boolean) => void;
   showArchived: boolean;
   setShowArchived: (on: boolean) => void;
   /** The last failed save. Surfaced once, by the toolbar. */
   error: string | null;
   dismissError: () => void;
+
+  /**
+   * Takes the first of `files` that `accept` allows, puts it in the media
+   * bucket, and resolves to the URL to store on whichever row asked — or to
+   * `null`, with the reason already on screen.
+   *
+   * The caller saves that URL into its own field, because only it knows
+   * whether the file is a headshot or a project image. It lives here rather
+   * than in the drop zone so that a refused file and a refused save report
+   * themselves in the same one place.
+   */
+  uploadMedia: (files: readonly File[], accept: readonly string[]) => Promise<string | null>;
 
   saveProfile: (patch: ProfilePatch) => void;
   addSocial: () => void;
@@ -114,6 +132,7 @@ export default function SiteProvider({ initialContent, children }: SiteProviderP
   const [canEdit, setCanEdit] = useState(false);
   const [editingPreference, setEditingPreference] = useState(true);
   const [showArchived, setShowArchived] = useState(false);
+  const [fileDragging, setFileDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Ask the server who we are. A 401 is the ordinary case here — the
@@ -157,6 +176,75 @@ export default function SiteProvider({ initialContent, children }: SiteProviderP
     setEditingPreference(on);
     window.localStorage.setItem(EDITING_KEY, String(on));
   }, []);
+
+  const editing = canEdit && editingPreference;
+
+  /**
+   * Watches the whole window for a file being dragged in, for two reasons.
+   *
+   * One: a file dropped anywhere other than an upload zone would otherwise be
+   * *opened* by the browser, which navigates the tab away from the page and
+   * takes any half-finished edit with it. `preventDefault` on both events is
+   * what stops that.
+   *
+   * Two: it is what lets every drop zone light up the moment a file crosses
+   * the window, rather than each one waiting to be found by the cursor. The
+   * question "where can I drop this?" is answered before the aiming starts.
+   *
+   * Only while editing — a reader dragging a file across the page should get
+   * the browser's ordinary behaviour.
+   */
+  useEffect(() => {
+    if (!editing) return;
+
+    /** `dragover` fires continuously; without this the page re-renders on
+     *  every mouse tick for a boolean that is already true. */
+    let active = false;
+
+    function carriesFiles(event: DragEvent): boolean {
+      return event.dataTransfer?.types.includes('Files') ?? false;
+    }
+
+    function over(event: DragEvent): void {
+      if (!carriesFiles(event)) return;
+      event.preventDefault();
+      if (!active) {
+        active = true;
+        setFileDragging(true);
+      }
+    }
+
+    function end(): void {
+      if (!active) return;
+      active = false;
+      setFileDragging(false);
+    }
+
+    function leave(event: DragEvent): void {
+      // A null `relatedTarget` is the drag leaving the window rather than
+      // crossing between two elements inside it.
+      if (event.relatedTarget === null) end();
+    }
+
+    function dropped(event: DragEvent): void {
+      event.preventDefault();
+      end();
+    }
+
+    window.addEventListener('dragenter', over);
+    window.addEventListener('dragover', over);
+    window.addEventListener('dragleave', leave);
+    window.addEventListener('dragend', end);
+    window.addEventListener('drop', dropped);
+    return () => {
+      window.removeEventListener('dragenter', over);
+      window.removeEventListener('dragover', over);
+      window.removeEventListener('dragleave', leave);
+      window.removeEventListener('dragend', end);
+      window.removeEventListener('drop', dropped);
+      end();
+    };
+  }, [editing]);
 
   /**
    * Runs one save. Every mutator below goes through this so the error
@@ -241,12 +329,29 @@ export default function SiteProvider({ initialContent, children }: SiteProviderP
     return {
       content,
       canEdit,
-      editing: canEdit && editingPreference,
+      editing,
+      fileDragging,
       setEditing,
       showArchived,
       setShowArchived,
       error,
       dismissError: () => setError(null),
+
+      uploadMedia: async (files, accept) => {
+        const { file, error: refused } = chooseUpload(files, accept);
+        if (!file) {
+          setError(refused);
+          return null;
+        }
+        try {
+          const url = await uploadMediaFile(file);
+          setError(null);
+          return url;
+        } catch (err) {
+          setError(err instanceof ApiError ? err.message : 'Could not upload that file.');
+          return null;
+        }
+      },
 
       saveProfile: (patch) =>
         void save(
@@ -329,7 +434,7 @@ export default function SiteProvider({ initialContent, children }: SiteProviderP
       saveTimelineEntry: (id, patch) =>
         void save(() => updateTimelineEntry(id, patch), replaceEntry, 'Could not save that entry.'),
     };
-  }, [content, canEdit, editingPreference, setEditing, showArchived, error, save]);
+  }, [content, canEdit, editing, fileDragging, setEditing, showArchived, error, save]);
 
   return <SiteContext value={value}>{children}</SiteContext>;
 }

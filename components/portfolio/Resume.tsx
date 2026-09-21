@@ -3,9 +3,12 @@
 import Image from 'next/image';
 import AdminField from '@/components/admin/AdminField';
 import AdminStrip from '@/components/admin/AdminStrip';
+import UploadButton from '@/components/admin/UploadButton';
+import UploadZone from '@/components/admin/UploadZone';
 import Button from '@/components/portfolio/Button';
 import Section from '@/components/portfolio/Section';
 import { useSite } from '@/components/SiteProvider';
+import { ALLOWED_DOCUMENT_TYPES, downloadUrl } from '@/lib/storage/media';
 
 export default function Resume() {
   const { content, saveProfile } = useSite();
@@ -17,7 +20,7 @@ export default function Resume() {
       title="Resume"
       action={
         resumePdfPath ? (
-          <Button href={resumePdfPath} download variant="primary">
+          <Button href={downloadUrl(resumePdfPath)} download variant="primary">
             Download Resume
           </Button>
         ) : null
@@ -40,20 +43,32 @@ export default function Resume() {
         ) : (
           <div className="relative aspect-[3/4] w-full rounded-lg border border-dashed border-line" />
         )}
+        <UploadZone
+          label="resume image"
+          onUploaded={(next) => saveProfile({ resumeImagePath: next })}
+        />
       </div>
 
       <AdminStrip className="mx-auto max-w-4xl">
         <AdminField
           label="Image"
           value={resumeImagePath}
-          placeholder="/images/resume.png"
+          placeholder="drop a file on the image, or paste a URL"
           onCommit={(next) => saveProfile({ resumeImagePath: next })}
         />
         <AdminField
           label="PDF"
           value={resumePdfPath}
-          placeholder="/Chris-Pyle-CV.pdf"
+          placeholder="the file the download button serves"
           onCommit={(next) => saveProfile({ resumePdfPath: next })}
+          className="flex-1"
+        />
+        {/* The PDF is the one piece of content with nothing on the page to
+            drop a file onto — the download button is a link, not a preview. */}
+        <UploadButton
+          label="Upload a PDF"
+          accept={ALLOWED_DOCUMENT_TYPES}
+          onUploaded={(next) => saveProfile({ resumePdfPath: next })}
         />
       </AdminStrip>
     </Section>

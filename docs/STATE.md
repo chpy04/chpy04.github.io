@@ -25,6 +25,15 @@ now a row.
   are not text on the page, get a strip of inputs under the item. Projects,
   social links, category chips and timeline entries can be added and
   archived.
+- **Images.** Every image is an object in a public Supabase Storage bucket
+  and the database holds its URL (D-026). While editing, each image on the
+  page is a drop target: drop a PNG/JPEG/GIF/WebP/AVIF on it (or click it
+  to pick one) and it is replaced, up to 50 MB. Each slot wears a small
+  "Replace" chip so it can be found without hunting, and every slot on the
+  page outlines itself the moment a file crosses the window. The resume PDF
+  has an upload button in its strip instead, having no picture to drop
+  onto. The bytes go from the browser straight to Supabase against a signed
+  URL — `POST /api/uploads` only names and signs (D-027).
 - **Auth.** Three modes (`dev` / `password` / `supabase`) resolved in one
   place, `lib/session.ts`. `dev` needs no login and signs in as the seeded
   user, which is why editing just works locally. `password` is a shared
@@ -48,12 +57,11 @@ now a row.
 
 - **Deployment.** Nothing is deployed. The target is Vercel + Supabase
   Postgres and `docs/DEPLOYMENT.md` is a checklist for it, not a record.
-  There is no git remote, and no repository at all yet.
+  The Supabase project exists — it holds the media bucket — but the app
+  runs nowhere but a laptop.
 - **`supabase` auth mode.** Written but unimplemented; it rejects every
   request. `lib/auth-supabase.ts` documents what implementing it involves.
   Until then a deployment uses `password` mode, which is a shared secret.
-- **Image upload.** Images are files in `public/` and the database stores
-  paths to them (D-018). Adding one means adding a file.
 - **Reordering in the UI.** `PUT /api/socials` and `PUT /api/projects`
   reorder a whole list and are covered by tests, but nothing in the page
   calls them — there is no drag handle. Order is whatever the seed set.
@@ -72,6 +80,11 @@ npm run db:migrate
 npm run db:seed              # creates the user AND the site content
 npm run dev                  # :3000, editable immediately (dev auth mode)
 ```
+
+Images render without any of this — they come from the bucket, and their
+URLs are in the seed data. Uploading one needs `SUPABASE_URL` and
+`SUPABASE_SERVICE_ROLE_KEY` in `.env`; without them the drop zones are
+there and `POST /api/uploads` answers `503`.
 
 `npm run db:seed` is what puts the portfolio in the database; it reads
 `scripts/seed-data/`, which is the content the old JSON-configured site

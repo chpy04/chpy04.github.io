@@ -4,6 +4,7 @@ import Image from 'next/image';
 import EditableText from '@/components/admin/EditableText';
 import AdminField from '@/components/admin/AdminField';
 import AdminStrip from '@/components/admin/AdminStrip';
+import UploadZone from '@/components/admin/UploadZone';
 import Socials from '@/components/portfolio/Socials';
 import { SHELL } from '@/components/portfolio/Section';
 import { useSite } from '@/components/SiteProvider';
@@ -65,6 +66,11 @@ export default function Hero() {
           ) : (
             <div className="relative aspect-square w-full rounded-full border border-dashed border-line" />
           )}
+          <UploadZone
+            round
+            label="headshot"
+            onUploaded={(headshotPath) => saveProfile({ headshotPath })}
+          />
         </div>
       </div>
 
@@ -72,7 +78,7 @@ export default function Hero() {
         <AdminField
           label="Headshot"
           value={profile.headshotPath}
-          placeholder="/images/headshot.jpg"
+          placeholder="drop a file on the photo, or paste a URL"
           onCommit={(headshotPath) => saveProfile({ headshotPath })}
         />
         <AdminField

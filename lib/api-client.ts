@@ -231,6 +231,77 @@ export async function archiveTimelineEntry(id: string): Promise<TimelineEntry> {
 }
 
 // ---------------------------------------------------------------------------
+// Uploads
+// ---------------------------------------------------------------------------
+
+interface SignedUpload {
+  uploadUrl: string;
+  publicUrl: string;
+  path: string;
+}
+
+/** Signing is a few hundred bytes of JSON each way. Past this, waiting is
+ *  not going to help — it is a dev server wedged compiling the route, or a
+ *  connection that is gone — and the caller deserves to be told rather than
+ *  left watching "Uploading…" for ever. */
+const SIGN_TIMEOUT_MS = 30_000;
+
+/** The bytes are a different matter: 50 MB on hotel wifi is minutes, and
+ *  cutting a real upload short would be the worse failure. Long enough not
+ *  to, short enough that a dead connection eventually says so. */
+const UPLOAD_TIMEOUT_MS = 10 * 60_000;
+
+/**
+ * Puts a file in the media bucket and returns the URL to store on the row.
+ *
+ * Two requests, not one. `POST /api/uploads` only *names* the object and
+ * signs a URL for it; the bytes then go from this browser straight to
+ * Supabase, never through the app (D-027). That is what lets a 20 MB GIF
+ * through a host whose request bodies stop at 4.5 MB — and it keeps the
+ * service-role key on the server, since the signature is scoped to one
+ * object key and expires.
+ *
+ * The PUT is the one deliberate bare `fetch` in this module: `authedFetch`
+ * would attach our session token to a third-party origin, and a 401 from
+ * Supabase is not our session expiring.
+ *
+ * Both halves carry a timeout, and everything that is not an HTTP answer —
+ * an abort, a dropped connection, a TLS error mid-upload — comes back as
+ * one sentence the owner can act on. Without that, a request that never
+ * settles leaves the drop zone saying "Uploading…" until the page is
+ * reloaded, which is indistinguishable from the app having hung.
+ */
+export async function uploadMedia(file: File): Promise<string> {
+  try {
+    const signed = await requestJson<SignedUpload>('/api/uploads', {
+      ...jsonBody('POST', { filename: file.name, contentType: file.type, bytes: file.size }),
+      signal: AbortSignal.timeout(SIGN_TIMEOUT_MS),
+    });
+
+    const response = await fetch(signed.uploadUrl, {
+      method: 'PUT',
+      headers: { 'content-type': file.type },
+      body: file,
+      signal: AbortSignal.timeout(UPLOAD_TIMEOUT_MS),
+    });
+    if (!response.ok) {
+      throw new ApiError(response.status, `The file could not be stored (${response.status}).`);
+    }
+
+    return signed.publicUrl;
+  } catch (err) {
+    // An `ApiError` means something answered and said no; keep its message.
+    if (err instanceof ApiError) throw err;
+    // Anything else never produced a response at all. `status: 0` says so —
+    // there was no HTTP status to carry.
+    throw new ApiError(
+      0,
+      `${file.name} did not finish uploading. Check your connection and try again.`,
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Feedback
 // ---------------------------------------------------------------------------
 

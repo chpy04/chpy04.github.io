@@ -5,6 +5,7 @@ import AdminField from '@/components/admin/AdminField';
 import AdminStrip from '@/components/admin/AdminStrip';
 import ArchiveToggle from '@/components/admin/ArchiveToggle';
 import EditableText from '@/components/admin/EditableText';
+import UploadZone from '@/components/admin/UploadZone';
 import Markdown from '@/components/portfolio/Markdown';
 import { badgeClass } from './kindStyles';
 import { useSite } from '@/components/SiteProvider';
@@ -32,6 +33,11 @@ export default function TimelineCard({ entry, className = '' }: TimelineCardProp
           ) : (
             <div className="h-full w-full rounded-lg border border-dashed border-line" />
           )}
+          <UploadZone
+            compact
+            label="timeline thumbnail"
+            onUploaded={(thumbnailPath) => saveTimelineEntry(entry.id, { thumbnailPath })}
+          />
         </div>
 
         <div className="flex min-w-0 flex-1 flex-col gap-2 tablet:flex-row tablet:items-start tablet:justify-between tablet:gap-4">
@@ -108,7 +114,7 @@ export default function TimelineCard({ entry, className = '' }: TimelineCardProp
         <AdminField
           label="Thumbnail"
           value={entry.thumbnailPath}
-          placeholder="/images/timeline/x.png"
+          placeholder="drop a file on the thumbnail, or paste a URL"
           onCommit={(thumbnailPath) => saveTimelineEntry(entry.id, { thumbnailPath })}
         />
         <ArchiveToggle

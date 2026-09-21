@@ -13,10 +13,11 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "node --env-file-if-exists=.env --experimental-strip-types --test \"lib/**/*.test.ts\"",
-    "test:e2e": "playwright test",
+    "test:e2e": "node --env-file-if-exists=.env ./node_modules/@playwright/test/cli.js test",
     "db:migrate": "node --env-file-if-exists=.env --experimental-strip-types scripts/migrate.ts",
     "db:seed": "node --env-file-if-exists=.env --experimental-strip-types scripts/seed.ts",
     "smoke": "node --env-file-if-exists=.env --experimental-strip-types scripts/smoke.ts",
+    "media:upload": "node --env-file-if-exists=.env --experimental-strip-types scripts/upload-media.ts",
     "verify": "npm run format:check && npm run lint && npm run typecheck && npm test && npm run build && npm run db:seed -- --force && npm run smoke && npm run test:e2e"
   },
   "dependencies": {
