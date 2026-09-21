@@ -83,6 +83,12 @@ That is `format:check`, `lint`, `typecheck`, `test`, `build`, reseed,
 `docker compose up -d db`, which serves Postgres on **:5434** (the template
 this came from uses 5433, and the two run side by side).
 
+**Stop any `next dev` you have running in this checkout first.** `test:e2e`
+starts its own on :3100, and two dev servers sharing one `.next` corrupt it
+— which surfaces later as a request that hangs for ever on
+`○ Compiling /api/… `, and looks exactly like the feature you just wrote
+being broken.
+
 Run the whole thing, not a subset. Each step catches something the previous
 one cannot:
 
