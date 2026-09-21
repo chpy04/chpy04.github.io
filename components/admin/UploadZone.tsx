@@ -27,8 +27,15 @@ interface UploadZoneProps {
  * card's layout is the same whether the edit layer is on or off, and an
  * empty slot (no image yet) is just as droppable as a filled one.
  *
- * Invisible until hovered, focused or dragged over. Every image on the page
- * having a permanent badge on it would make the edit layer the design.
+ * Three states, because an affordance nobody can see is not one:
+ *
+ *   - **at rest**, while editing: a small chip in the corner, enough to say
+ *     this picture is a slot and takes a file. Not the full overlay — every
+ *     image wearing a panel would make the edit layer the design;
+ *   - **armed**, the moment a file crosses the window (`fileDragging`):
+ *     every slot on the page outlines itself, so the answer to "where can I
+ *     drop this?" arrives before the aiming does;
+ *   - **hot**, under the cursor or mid-upload: filled, and it says so.
  *
  * It is a `<button>`, not a bare div, because drag-and-drop is a gesture a
  * keyboard cannot make: tabbing to it and pressing Enter opens the same file
@@ -42,7 +49,7 @@ export default function UploadZone({
   compact = false,
   round = false,
 }: UploadZoneProps) {
-  const { editing, uploadMedia } = useSite();
+  const { editing, fileDragging, uploadMedia } = useSite();
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -69,7 +76,8 @@ export default function UploadZone({
     setDragging(true);
   }
 
-  const active = dragging || busy;
+  const hot = dragging || busy;
+  const armed = fileDragging && !hot;
 
   return (
     <>
@@ -94,22 +102,41 @@ export default function UploadZone({
         onDragOver={handleDragOver}
         onDragLeave={() => setDragging(false)}
         onDrop={handleDrop}
-        className={`absolute inset-0 z-10 flex items-center justify-center border-2 border-dashed transition-opacity duration-150 focus:outline-none ${
+        className={`absolute inset-0 z-10 border-2 border-dashed transition-colors duration-150 focus:outline-none ${
           round ? 'rounded-full' : 'rounded-lg'
         } ${
-          active
-            ? 'border-edit bg-edit-surface/80 opacity-100'
-            : 'border-edit/50 bg-edit-surface/60 opacity-0 hover:opacity-100 focus-visible:opacity-100'
+          hot
+            ? 'border-edit bg-edit-surface/80'
+            : armed
+              ? 'border-edit/70 bg-edit-surface/50'
+              : 'border-transparent hover:border-edit/60 hover:bg-edit-surface/30 focus-visible:border-edit/60 focus-visible:bg-edit-surface/30'
         }`}
       >
-        <span className="pointer-events-none flex items-center gap-1.5 text-edit-ink">
+        {/* The always-on half: small, cornered, and the only part a reader
+            would ever have to not see — this whole component is unmounted
+            for them. */}
+        <span
+          className={`pointer-events-none absolute flex items-center gap-1 rounded-md bg-edit-surface/90 px-1.5 py-1 text-edit-ink shadow-sm ${
+            // A circle's corner is empty space: the chip would float beside
+            // the photograph rather than sit on it.
+            round ? 'bottom-3 left-1/2 -translate-x-1/2' : 'top-1 right-1'
+          }`}
+        >
           <UploadIcon />
-          {compact ? null : (
-            <span className="text-xs font-medium">
-              {busy ? 'Uploading…' : dragging ? 'Drop to replace' : 'Drop or choose a file'}
-            </span>
-          )}
+          {compact ? null : <span className="text-[11px] font-medium">Replace</span>}
         </span>
+
+        {/* The rest of the message, once there is room for it to matter. */}
+        {hot || armed ? (
+          <span className="pointer-events-none absolute inset-0 flex items-center justify-center px-2">
+            {/* On its own background, not floating over the picture: the
+                images underneath are photographs, and half of them are
+                pale enough to swallow light text. */}
+            <span className="rounded-md bg-edit-surface/90 px-2 py-1 text-center text-xs font-medium text-edit-ink">
+              {busy ? 'Uploading…' : compact ? '' : dragging ? 'Drop to replace' : 'Drop a file'}
+            </span>
+          </span>
+        ) : null}
       </button>
     </>
   );

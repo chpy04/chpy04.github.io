@@ -59,6 +59,10 @@ interface SiteContextValue {
   canEdit: boolean;
   /** Edit affordances are live. Never true unless `canEdit`. */
   editing: boolean;
+  /** A file is being dragged somewhere over the window. Every upload zone
+   *  shows itself while this is true, so "where can I drop this?" is
+   *  answered before the aiming starts. */
+  fileDragging: boolean;
   setEditing: (on: boolean) => void;
   showArchived: boolean;
   setShowArchived: (on: boolean) => void;
@@ -128,6 +132,7 @@ export default function SiteProvider({ initialContent, children }: SiteProviderP
   const [canEdit, setCanEdit] = useState(false);
   const [editingPreference, setEditingPreference] = useState(true);
   const [showArchived, setShowArchived] = useState(false);
+  const [fileDragging, setFileDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Ask the server who we are. A 401 is the ordinary case here — the
@@ -175,24 +180,69 @@ export default function SiteProvider({ initialContent, children }: SiteProviderP
   const editing = canEdit && editingPreference;
 
   /**
-   * A file dropped anywhere other than an upload zone would otherwise be
-   * opened by the browser, which navigates the tab away from the page and
-   * takes any half-finished edit with it. Cheap to swallow, and only while
-   * the edit layer is on — a reader dropping a file on the page should get
+   * Watches the whole window for a file being dragged in, for two reasons.
+   *
+   * One: a file dropped anywhere other than an upload zone would otherwise be
+   * *opened* by the browser, which navigates the tab away from the page and
+   * takes any half-finished edit with it. `preventDefault` on both events is
+   * what stops that.
+   *
+   * Two: it is what lets every drop zone light up the moment a file crosses
+   * the window, rather than each one waiting to be found by the cursor. The
+   * question "where can I drop this?" is answered before the aiming starts.
+   *
+   * Only while editing — a reader dragging a file across the page should get
    * the browser's ordinary behaviour.
    */
   useEffect(() => {
     if (!editing) return;
 
-    function swallow(event: DragEvent): void {
-      event.preventDefault();
+    /** `dragover` fires continuously; without this the page re-renders on
+     *  every mouse tick for a boolean that is already true. */
+    let active = false;
+
+    function carriesFiles(event: DragEvent): boolean {
+      return event.dataTransfer?.types.includes('Files') ?? false;
     }
 
-    window.addEventListener('dragover', swallow);
-    window.addEventListener('drop', swallow);
+    function over(event: DragEvent): void {
+      if (!carriesFiles(event)) return;
+      event.preventDefault();
+      if (!active) {
+        active = true;
+        setFileDragging(true);
+      }
+    }
+
+    function end(): void {
+      if (!active) return;
+      active = false;
+      setFileDragging(false);
+    }
+
+    function leave(event: DragEvent): void {
+      // A null `relatedTarget` is the drag leaving the window rather than
+      // crossing between two elements inside it.
+      if (event.relatedTarget === null) end();
+    }
+
+    function dropped(event: DragEvent): void {
+      event.preventDefault();
+      end();
+    }
+
+    window.addEventListener('dragenter', over);
+    window.addEventListener('dragover', over);
+    window.addEventListener('dragleave', leave);
+    window.addEventListener('dragend', end);
+    window.addEventListener('drop', dropped);
     return () => {
-      window.removeEventListener('dragover', swallow);
-      window.removeEventListener('drop', swallow);
+      window.removeEventListener('dragenter', over);
+      window.removeEventListener('dragover', over);
+      window.removeEventListener('dragleave', leave);
+      window.removeEventListener('dragend', end);
+      window.removeEventListener('drop', dropped);
+      end();
     };
   }, [editing]);
 
@@ -280,6 +330,7 @@ export default function SiteProvider({ initialContent, children }: SiteProviderP
       content,
       canEdit,
       editing,
+      fileDragging,
       setEditing,
       showArchived,
       setShowArchived,
@@ -383,7 +434,7 @@ export default function SiteProvider({ initialContent, children }: SiteProviderP
       saveTimelineEntry: (id, patch) =>
         void save(() => updateTimelineEntry(id, patch), replaceEntry, 'Could not save that entry.'),
     };
-  }, [content, canEdit, editing, setEditing, showArchived, error, save]);
+  }, [content, canEdit, editing, fileDragging, setEditing, showArchived, error, save]);
 
   return <SiteContext value={value}>{children}</SiteContext>;
 }

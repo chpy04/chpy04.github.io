@@ -34,7 +34,8 @@ the bottom-left corner, on by default for the owner:
 - **Dates, links and image URLs** are not text on the page, so they get a
   strip of inputs under the item they belong to.
 - **Drop an image on an image** to replace it — or click it to pick a file.
-  PNG, JPEG, GIF, WebP and AVIF, up to 50 MB.
+  Every slot is marked while editing, and they all light up as soon as a
+  file is dragged onto the page. PNG, JPEG, GIF, WebP and AVIF, up to 50 MB.
 - **Add** a project, social link, category chip or timeline entry with the
   dashed `+` buttons.
 - **Archive** instead of deleting. Nothing is ever removed; "Show archived"

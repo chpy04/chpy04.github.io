@@ -28,10 +28,12 @@ now a row.
 - **Images.** Every image is an object in a public Supabase Storage bucket
   and the database holds its URL (D-024). While editing, each image on the
   page is a drop target: drop a PNG/JPEG/GIF/WebP/AVIF on it (or click it
-  to pick one) and it is replaced, up to 50 MB. The resume PDF has an
-  upload button in its strip instead, having no picture to drop onto. The
-  bytes go from the browser straight to Supabase against a signed URL —
-  `POST /api/uploads` only names and signs (D-025).
+  to pick one) and it is replaced, up to 50 MB. Each slot wears a small
+  "Replace" chip so it can be found without hunting, and every slot on the
+  page outlines itself the moment a file crosses the window. The resume PDF
+  has an upload button in its strip instead, having no picture to drop
+  onto. The bytes go from the browser straight to Supabase against a signed
+  URL — `POST /api/uploads` only names and signs (D-025).
 - **Auth.** Three modes (`dev` / `password` / `supabase`) resolved in one
   place, `lib/session.ts`. `dev` needs no login and signs in as the seeded
   user, which is why editing just works locally. `password` is a shared

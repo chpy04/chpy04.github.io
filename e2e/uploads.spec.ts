@@ -22,6 +22,7 @@ test('a reader is never offered an upload', async ({ page }) => {
   await page.goto('/');
 
   await expect(page.getByRole('button', { name: /^Replace the/ })).toHaveCount(0);
+  await expect(page.getByText('Replace', { exact: true })).toHaveCount(0);
   await expect(page.locator('input[type="file"]')).toHaveCount(0);
 });
 
@@ -35,6 +36,25 @@ test('every image on the page is a drop target while editing', async ({ page }) 
 
   // The resume PDF is the one file with no image to drop onto.
   await expect(page.getByRole('button', { name: 'Upload a PDF' })).toBeVisible();
+
+  // And it says so without being hovered first. An affordance that only
+  // exists under the cursor is one nobody knows to look for.
+  expect(await page.getByText('Replace', { exact: true }).count()).toBeGreaterThan(3);
+});
+
+test('dragging a file in lights up every slot at once', async ({ page }) => {
+  await signIn(page);
+  await setEditing(page, true);
+
+  await expect(page.getByText('Drop a file')).toHaveCount(0);
+
+  // A file crossing the window, which is what the provider listens for —
+  // no cursor has found a zone yet.
+  await page
+    .locator('body')
+    .dispatchEvent('dragenter', { dataTransfer: await transfer(page, 'x.png', 'image/png', TINY_PNG) }); // prettier-ignore
+
+  expect(await page.getByText('Drop a file').count()).toBeGreaterThan(3);
 });
 
 test('an image field refuses anything that is not an image', async ({ page }) => {
@@ -125,15 +145,20 @@ async function drop(
   contentType: string,
   base64: string,
 ): Promise<void> {
-  const dataTransfer = await page.evaluateHandle(
+  await target.dispatchEvent('drop', {
+    dataTransfer: await transfer(page, filename, contentType, base64),
+  });
+}
+
+/** A `DataTransfer` carrying one file, built inside the page. */
+function transfer(page: Page, filename: string, contentType: string, base64: string) {
+  return page.evaluateHandle(
     async ([name, type, data]: string[]) => {
       const response = await fetch(`data:${type};base64,${data}`);
-      const transfer = new DataTransfer();
-      transfer.items.add(new File([await response.blob()], name!, { type: type! }));
-      return transfer;
+      const item = new DataTransfer();
+      item.items.add(new File([await response.blob()], name!, { type: type! }));
+      return item;
     },
     [filename, contentType, base64],
   );
-
-  await target.dispatchEvent('drop', { dataTransfer });
 }
