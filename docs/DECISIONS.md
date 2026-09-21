@@ -277,11 +277,11 @@ the two anchors in the source data on the way in.
 
 ## D-018 — Images stay files; the database stores paths
 
-> **Superseded by D-024.** Images are objects in a Supabase Storage bucket
+> **Superseded by D-026.** Images are objects in a Supabase Storage bucket
 > and the columns below hold their URLs. The reasoning here is kept because
-> it is what D-024 had to answer: the cost it names — a bucket, a signing
-> flow, a size and type policy, a broken-link story — is real, and D-024 and
-> D-025 are where each of those was paid.
+> it is what D-026 had to answer: the cost it names — a bucket, a signing
+> flow, a size and type policy, a broken-link story — is real, and D-026 and
+> D-027 are where each of those was paid.
 
 `headshot_path`, `image_path`, `thumbnail_path` and the two resume paths
 are strings pointing into `public/`. Nothing in the app uploads an image.
@@ -398,7 +398,73 @@ create the children. Children are live work the moment they exist — a `task`
 child is launched straight at `/implement` by `herd.sh` — so creating them
 before the approval would start code on an unapproved epic.
 
-## D-024 — Images live in Supabase Storage, and the column holds a URL
+## D-024 — `herd.sh` creates the worktree; an agent never starts in the main checkout
+
+`scripts/worktree.sh` creates or reuses the worktree for an issue or a PR,
+and `herd.sh` calls it **before** launching, so a code-writing agent's cwd
+is its own worktree from its first command. If the worktree cannot be made,
+the agent is not started at all.
+
+Before this, the worktree was a block of bash in `/implement`'s SKILL.md
+for the agent to copy, and the agent was started with `--cwd` set to the
+main checkout. So "did this agent work in the main checkout" was answered
+by whether a model followed prose — and every way of getting it wrong is
+silent at the time: two `next build` processes in one checkout corrupt
+`.next` and surface as `ENOENT .next/routes-manifest.json` in a _different_
+agent's run, and a commit lands on whichever branch the checkout is on,
+usually `main`.
+
+`assert` stays in the skills as the second half, because a human typing
+`/implement 12` by hand gets no herd and no pre-made worktree. Belt and
+braces is right here: the cheap check runs before every first write.
+
+`/plan` is deliberately exempt and runs in the main checkout. It writes to
+the issue through `gh` and never to a file, so a worktree would buy nothing
+— which is why the skill instead forbids it from building, running the gate
+or editing anything.
+
+Rejected: keeping creation in the skill and adding only the assertion (the
+agent still starts in the main checkout, so every read, and any slip before
+the first assert, happens there); and giving `/plan` a worktree too (a
+directory and a branch per plan, to hold no changes).
+
+Not solved by this: the **database is still shared**. Worktrees isolate the
+filesystem and the branch, not Postgres on :5434, so two agents running
+`npm run verify` at once still collide on `npm run db:seed -- --force`,
+which truncates. The fixtures are written for a shared database, but the
+reseed is not.
+
+## D-025 — The timeline's step buttons flank the card, not the dot
+
+"Arrows to the left and right of the current one" reads most naturally as
+beside the selected dot, and that is not where they are. Two entries may sit
+`MIN_DOT_GAP` — 2.4% — apart, so a pair of dot-anchored arrows would sit on
+top of their neighbours, and every step would move them horizontally by an
+unpredictable amount. A control that relocates each time you press it is not
+a control you can press five times.
+
+Beside the card they are stationary, they read as the carousel control they
+are, and at laptop width and above they occupy dead space the card's
+`max-w-3xl` already leaves empty. They are flex siblings of the card rather
+than absolutely positioned in that dead space, because at tablet width the
+card fills the shell and there is none — as siblings the card narrows, as
+overlays they would land on top of it.
+
+The dot stays the thing the arrows move. What says which dot that is, is the
+leader line from the dot down to the card's top edge — emphasising the dot
+alone does not answer "which one is being shown" when the answer is 200px
+below and centred, with nothing joining the two.
+
+Rejected: arrows on the axis itself (above), and wrapping from the newest
+entry round to the oldest instead of disabling at the ends, which throws
+away the one thing a date-proportional axis is for — knowing where on it
+you are.
+
+This is the most reversible call in the change. Moving the arrows onto the
+axis touches nothing else: the stepping is `move()` plus a clamp, and the
+leader line is independent of where the buttons are.
+
+## D-026 — Images live in Supabase Storage, and the column holds a URL
 
 The five path columns hold an absolute URL into a public Supabase Storage
 bucket (`portfolio-media`), not a path under `public/`. The repository
@@ -436,7 +502,7 @@ The bucket enforces the same two rules the app does — a 50 MB
 bucket is the one a forged request also hits. No SVG in either: it is a
 script host, and `next/image` will not optimize one anyway.
 
-## D-025 — The browser uploads to Supabase directly, against a signed URL
+## D-027 — The browser uploads to Supabase directly, against a signed URL
 
 `POST /api/uploads` carries no bytes. It resolves the caller, builds the
 object key from **their** user id, asks Supabase for a URL that may be

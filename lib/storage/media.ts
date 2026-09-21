@@ -43,7 +43,7 @@ export const ALLOWED_IMAGE_TYPES: readonly string[] = ALLOWED_UPLOAD_TYPES.filte
  * already on the page would be a strange limit to ship.
  *
  * It is only reachable because the bytes never pass through the app: the
- * browser PUTs them straight to Supabase against a signed URL (D-025).
+ * browser PUTs them straight to Supabase against a signed URL (D-027).
  * A proxying endpoint would cap out at the host's 4.5 MB request body.
  */
 export const MAX_UPLOAD_BYTES = 50 * 1024 * 1024;

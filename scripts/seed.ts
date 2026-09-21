@@ -98,7 +98,7 @@ interface SourceTimelineEntry {
   end?: string;
   type: string;
   /** An absolute URL, not a filename: the media moved to Supabase Storage
-   *  (D-024) and `scripts/upload-media.ts` rewrote these in place. */
+   *  (D-026) and `scripts/upload-media.ts` rewrote these in place. */
   thumbnail: string;
 }
 

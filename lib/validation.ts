@@ -56,7 +56,7 @@ export const feedbackSchema = z.object({
 
 /**
  * Describes a file that is *about* to be uploaded — the bytes themselves go
- * straight from the browser to Supabase and never pass through here (D-025).
+ * straight from the browser to Supabase and never pass through here (D-027).
  *
  * So this is a claim, not a measurement: a caller could understate `bytes`
  * or lie about `contentType`. The bucket's own `file_size_limit` and

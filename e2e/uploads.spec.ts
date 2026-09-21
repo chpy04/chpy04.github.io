@@ -4,7 +4,7 @@ import { setEditing, signIn } from './support';
 /**
  * The promise: while editing, an image on the page is a place to drop a file,
  * and dropping one replaces it everywhere — without a commit, a deploy, or a
- * path typed by hand (D-024).
+ * path typed by hand (D-026).
  *
  * The drop itself needs somewhere for the bytes to go, so the test that
  * performs one runs only where Supabase Storage is configured. The
@@ -110,7 +110,7 @@ test.describe('with storage configured', () => {
     await page.reload();
     expect(await field.inputValue()).toBe(original);
 
-    // And out of the bucket. The app never deletes an object (D-024) because
+    // And out of the bucket. The app never deletes an object (D-026) because
     // something may still point at it; nothing points at this one, and a
     // test that leaves a file behind on every run leaves a few hundred.
     await remove(stored);

@@ -4,7 +4,7 @@
  * It does not carry the file. The handler names the object, asks Supabase
  * for a URL that may be written exactly once at exactly that name, and hands
  * the browser back the signed URL plus the public URL the file will live at
- * (D-025). The bytes go browser → Supabase; the app never sees them, which
+ * (D-027). The bytes go browser → Supabase; the app never sees them, which
  * is what lets an 18 MB GIF through a host that caps request bodies at
  * 4.5 MB.
  *

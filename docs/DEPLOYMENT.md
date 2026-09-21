@@ -40,7 +40,7 @@ it can stay unset.
 
 ### Storage
 
-The images are already there and are not part of a deploy (D-024). What a
+The images are already there and are not part of a deploy (D-026). What a
 new Supabase project needs:
 
 1. A public bucket — `portfolio-media` unless `SUPABASE_STORAGE_BUCKET`
@@ -76,6 +76,6 @@ column waiting for it and `lib/auth-supabase.ts` is the one file to write
 
 - Sign in at `/login` with `APP_PASSWORD` to get the edit layer. There is
   no link to it from the page, by design.
-- Images are objects in the media bucket (D-024): dropping a new one on the
+- Images are objects in the media bucket (D-026): dropping a new one on the
   page is neither a commit nor a redeploy. This needs `SUPABASE_URL` and
   `SUPABASE_SERVICE_ROLE_KEY` to be set on the deployment, not just locally.

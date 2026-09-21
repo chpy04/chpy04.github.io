@@ -200,13 +200,13 @@ into whichever field it belongs to (`headshotPath`, `imagePath`,
 does both halves as `uploadMedia()`.
 
 The bytes never pass through this app, which is what lets a 20 MB GIF
-through a host that stops request bodies at 4.5 MB (D-025). `bytes` and
+through a host that stops request bodies at 4.5 MB (D-027). `bytes` and
 `contentType` are therefore a _claim_: they buy the caller a good error
 before a long upload, while the bucket's own `file_size_limit` and
 `allowed_mime_types` are what actually hold.
 
 `contentType` must be one of `image/png`, `image/jpeg`, `image/gif`,
-`image/webp`, `image/avif`, `application/pdf` — no SVG (D-024). The object
+`image/webp`, `image/avif`, `application/pdf` — no SVG (D-026). The object
 key is built from the session's user id and is **not** the caller's to
 choose.
 
@@ -214,7 +214,7 @@ choose.
 `SUPABASE_SERVICE_ROLE_KEY`; `502` means Supabase refused to sign.
 
 There is no `DELETE`. Replacing an image leaves the old object in the
-bucket (D-024), the same way replacing content archives rather than deletes.
+bucket (D-026), the same way replacing content archives rather than deletes.
 
 ## Adding an endpoint
 

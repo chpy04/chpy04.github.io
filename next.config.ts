@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
   images: {
     /**
      * Content images live in a public Supabase Storage bucket and the
-     * database stores their absolute URLs (D-024), so `next/image` has to be
+     * database stores their absolute URLs (D-026), so `next/image` has to be
      * told the host is allowed — an unlisted one is a hard 400 at render.
      *
      * Any project ref, but only the public read path of Storage: this is a

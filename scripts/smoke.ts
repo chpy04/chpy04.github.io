@@ -100,7 +100,7 @@ async function main(): Promise<void> {
   );
 
   // 7. Every image the page shows is in the bucket. A `/images/...` path is
-  //    a file that used to be in the repository and no longer is (D-024):
+  //    a file that used to be in the repository and no longer is (D-026):
   //    it renders as a broken image, and nothing else in the system notices.
   const mediaPaths = [
     content.profile.headshotPath,

@@ -1,6 +1,6 @@
 /**
  * Moves the seed's images out of the repository and into Supabase Storage,
- * then rewrites the seed data to point at them (D-024).
+ * then rewrites the seed data to point at them (D-026).
  *
  * It is the tool that made the repo stop carrying 50 MB of PNGs, and it stays
  * because the same thing has to happen to any image added to the seed later:

@@ -79,7 +79,7 @@ caller handles "this user has no profile yet".
 | `resume_pdf_path`   | `text` not null | a URL in the media bucket             |
 
 The three are absolute URLs into the `portfolio-media` Supabase Storage
-bucket (D-024). Images are objects, not rows: the column holds where the
+bucket (D-026). Images are objects, not rows: the column holds where the
 file is, the edit layer uploads the bytes there and writes the URL back,
 and nothing is ever deleted from the bucket.
 

@@ -44,7 +44,7 @@ the bottom-left corner, on by default for the owner:
   project cards are not links, which is what makes their titles clickable.
 
 Images are objects in a Supabase Storage bucket; the database stores their
-URLs (D-024). Uploading needs `SUPABASE_URL` and
+URLs (D-026). Uploading needs `SUPABASE_URL` and
 `SUPABASE_SERVICE_ROLE_KEY`; without them the page still renders every
 image and only the upload answers `503`.
 

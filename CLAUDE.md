@@ -149,13 +149,13 @@ over. Update the contract in the same commit as the code.
 ## Content, and what is not content
 
 Text, links and dates are rows, edited on the page. **Images are objects in
-a Supabase Storage bucket** and the database stores their URLs (D-024).
+a Supabase Storage bucket** and the database stores their URLs (D-026).
 Nothing image-shaped lives in `public/` any more; adding one is a drop on
 the page, not a commit.
 
 The bytes never pass through the app. `POST /api/uploads` signs a URL for
 one object key built from the caller's own user id, and the browser PUTs
-the file to Supabase itself (D-025) — which is what gets a 20 MB GIF past
+the file to Supabase itself (D-027) — which is what gets a 20 MB GIF past
 a 4.5 MB request-body ceiling. The allowlist and the size limit live in
 `lib/storage/media.ts` and are mirrored on the bucket; uploads are never
 deleted, for the same reason content is archived rather than deleted.

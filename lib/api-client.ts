@@ -256,7 +256,7 @@ const UPLOAD_TIMEOUT_MS = 10 * 60_000;
  *
  * Two requests, not one. `POST /api/uploads` only *names* the object and
  * signs a URL for it; the bytes then go from this browser straight to
- * Supabase, never through the app (D-025). That is what lets a 20 MB GIF
+ * Supabase, never through the app (D-027). That is what lets a 20 MB GIF
  * through a host whose request bodies stop at 4.5 MB — and it keeps the
  * service-role key on the server, since the signature is scoped to one
  * object key and expires.
